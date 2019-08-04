@@ -2,6 +2,7 @@
 persist data to db
 '''
 from datetime import date
+import datetime
 import json
 from peewee import *
 import logging
@@ -33,7 +34,7 @@ class Item(BaseModel):
     meta_info = TextField()
 
     def __repr__(self):
-        return f'<Item {self.title}>'
+        return f'<Item:{self.id} {self.title}>'
 
     @staticmethod
     def saveit(meta_info):
@@ -54,6 +55,11 @@ class Item(BaseModel):
     def loadit(item):
         meta = json.loads(item.meta_info)
         item.cover_img_url = meta['cover_img_url']
+
+    @staticmethod
+    def getit(id):
+        item = Item.get_by_id(id)
+        return item
 
 
 class Tag(BaseModel):
@@ -97,12 +103,13 @@ class ItemTag(BaseModel):
         return f'<ItemTag {self.item.title} - {self.tag.value}>'
 
 
-class Rate_Type(IntEnum):
+class RATE_TYPE(IntEnum):
+    NOT_RATE = 0
     USER_RATE = 1
     SYSTEM_RATE = 2
 
 
-class Rate_Value(IntEnum):
+class RATE_VALUE(IntEnum):
     LIKE = 1
     DISLIKE = 0
 
@@ -110,7 +117,8 @@ class Rate_Value(IntEnum):
 class ItemRate(BaseModel):
     rate_type = IntegerField()
     rate_value = IntegerField()
-    item = ForeignKeyField(Item, backref='rated_items')
+    item = ForeignKeyField(Item, backref='rated_items', unique=True)
+    rete_time = DateTimeField(default=datetime.datetime.now)
 
     @staticmethod
     def saveit(rate_type, rate_value, item):
@@ -162,10 +170,20 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     items = []
     if not rate_type and not rate_value:
         # get all
-        q = Item.select()
-        for item in q.paginate(page, page_size):
-            Item.loadit(item)
-            items.append(item)
+        q = (Item.select()
+                 .join(ItemRate, JOIN.LEFT_OUTER)
+                 .where(ItemRate.rate_type.is_null())
+                 .order_by(Item.id.desc())
+             )
+    else:
+        q = (Item.select()
+                 .join(ItemRate, JOIN.LEFT_OUTER)
+                 .where(ItemRate.rate_type == rate_type)
+                 .order_by(Item.id.desc())
+             )
+    for item in q.paginate(page, page_size):
+        Item.loadit(item)
+        items.append(item)
 
     total_items = q.count()
     total_pages = (total_items + page_size - 1) // page_size
@@ -175,7 +193,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
 
 def init():
     db.connect()
-    db.create_tables([Item, Tag, ItemTag])
+    db.create_tables([Item, Tag, ItemTag, ItemRate])
 
 
 init()

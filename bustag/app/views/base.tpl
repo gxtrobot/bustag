@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 	
-    <title>BusTag</title>
+    <title>{{title or '首页'}}</title>
   </head>
   <body>
 
@@ -37,43 +37,8 @@
     </div>
   </div>
 </div>
-<div class="container">
- <div class="row py-3">
-	<div class="col-12">
-		<ul class="nav nav-tabs">
-		<li class="nav-item">
-			<a class="nav-link active" href="#">喜欢</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="#">不喜欢</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="#">全部</a>
-		</li>
-		</ul>
-	</div>
-</div>
-%#generate list of rows of items 
-%for item in items:
-	<div class="row py-3">
-		<div class="col-3">
-		<img src={{1}} width="150">
-		</div>
-			<div class="col-5">
-			{{item.title}}
-			<div>
-			<span class="badge badge-primary">高清</span>
-			<span class="badge badge-primary">高画质</span>
-			</div>
-		
-			</div>
-		<div class="col-4 align-self-center">
-		<button type="button" class="btn btn-primary btn-sm">正确</button>
-		<button type="button" class="btn btn-danger btn-sm">错误</button>
-		</div>
-	</div>
-%end
-</div>
+
+{{!base}}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
