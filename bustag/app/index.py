@@ -24,9 +24,10 @@ def index():
 
 @route('/tagit')
 def tagit():
-    items, page_info = get_items(page=1)
-    print(items[0])
-    return template('tagit', items=items)
+    page = int(request.query.get('page', 1))
+    print(page)
+    items, page_info = get_items(page=page)
+    return template('tagit', items=items, page_info=page_info)
 
 
 @route('/tag/<id:int>', method='POST')
@@ -36,7 +37,10 @@ def tag(id):
         rate_value = request.POST.submit
         item = Item.getit(id)
         ItemRate.saveit(rate_type, rate_value, item)
-    redirect('/tagit')
+    page = int(request.query.get('page', 1))
+    url = f'/tagit?page={page}'
+    print(url)
+    redirect(url)
 
 
-run(host='localhost', port=8080, debug=True, reloader=True)
+run(host='0.0.0.0', port=8080, debug=True, reloader=True)

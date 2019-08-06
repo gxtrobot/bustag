@@ -3,6 +3,8 @@ persist data to db
 '''
 from datetime import date
 import datetime
+import operator
+from functools import reduce
 import json
 from peewee import *
 import logging
@@ -55,6 +57,13 @@ class Item(BaseModel):
     def loadit(item):
         meta = json.loads(item.meta_info)
         item.cover_img_url = meta['cover_img_url']
+        tags = []
+        series = item.fanhao.split('-')[0]
+        for t in item.tags:
+            tags.append(t.tag.value)
+        tags.append(series)
+        tags = set(tags)
+        item.tags = tags
 
     @staticmethod
     def getit(id):
@@ -168,24 +177,29 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     get required items based on some conditions
     '''
     items = []
-    if not rate_type and not rate_value:
-        # get all
-        q = (Item.select()
-                 .join(ItemRate, JOIN.LEFT_OUTER)
-                 .where(ItemRate.rate_type.is_null())
-                 .order_by(Item.id.desc())
-             )
+    clauses = []
+    if rate_type:
+        clauses.append(ItemRate.rate_type == rate_type)
     else:
-        q = (Item.select()
-                 .join(ItemRate, JOIN.LEFT_OUTER)
-                 .where(ItemRate.rate_type == rate_type)
-                 .order_by(Item.id.desc())
-             )
-    for item in q.paginate(page, page_size):
+        clauses.append(ItemRate.rate_type.is_null())
+    if rate_value:
+        clauses.append(ItemRate.rate_value == rate_value)
+    q = (Item.select(Item, ItemRate)
+         .join(ItemRate, JOIN.LEFT_OUTER, attr='item_rate')
+         .where(reduce(operator.and_, clauses))
+         .order_by(Item.id.desc())
+         )
+    total_items = q.count()
+    if not page is None:
+        q = q.paginate(page, page_size)
+    for item in q:
         Item.loadit(item)
+        if hasattr(item, 'item_rate'):
+            item.rate_value = item.item_rate.rate_value
+        else:
+            item.rate_value = None
         items.append(item)
 
-    total_items = q.count()
     total_pages = (total_items + page_size - 1) // page_size
     page_info = (total_items, total_pages, page, page_size)
     return items, page_info

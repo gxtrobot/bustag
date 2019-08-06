@@ -39,6 +39,7 @@ nosetests.xml
 # temp file
 .DS_Store
 *.db
+*.pkl
 
 # venv
 .venv/
@@ -48,3 +49,6 @@ output/
 
 # vscode
 .vscode
+
+# notebooks
+notebooks/
