@@ -23,10 +23,10 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">推荐 <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">推荐 <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">打标</a>
+        <a class="nav-link" href="/tagit">打标</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">其他</a>

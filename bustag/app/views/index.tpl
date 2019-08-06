@@ -1,85 +1,58 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+% rebase('base.tpl', title='打标')
+% curr_page = page_info[2]
+% max_page = page_info[1]
 
-    <!-- Bootstrap CSS -->
-	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-	
-    <title>BusTag</title>
-  </head>
-  <body>
-
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">推荐 <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">打标</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">其他</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-    </div>
-  </div>
-</div>
 <div class="container">
  <div class="row py-3">
 	<div class="col-12">
 		<ul class="nav nav-tabs">
 		<li class="nav-item">
-			<a class="nav-link active" href="#">喜欢</a>
+			<a class="nav-link {{'active' if like==1 else ''}}" href="?like=1">喜欢</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#">不喜欢</a>
+			<a class="nav-link {{'' if like==1 else 'active'}}" href="?like=0">不喜欢</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#">全部</a>
 		</li>
 		</ul>
 	</div>
 </div>
 %#generate list of rows of items 
 %for item in items:
+<form action="/tag/{{item.id}}?page={{curr_page}}" method="post">
 	<div class="row py-3">
-		<div class="col-3">
-		<img src={{1}} width="150">
+		<div class="col-12 col-sm-3">
+		<img src={{item.cover_img_url}} width="200">
 		</div>
-			<div class="col-5">
-			{{item.title}}
+			
+			<div class="col-6 col-sm-5">
+			<p class="small text-muted">{{item.add_date}}</p>
+			<p class="small text-muted">id: {{item.id}}</p>
+			<h6>{{item.fanhao}} </h6>
+			<a href="{{item.url}}" target="_blank"> {{item.title}} </a>
 			<div>
 			<span class="badge badge-primary">高清</span>
 			<span class="badge badge-primary">高画质</span>
 			</div>
 		
 			</div>
-		<div class="col-4 align-self-center">
-		<button type="button" class="btn btn-primary btn-sm">正确</button>
-		<button type="button" class="btn btn-danger btn-sm">错误</button>
+		<div class="col-6 col-sm-4  align-self-center">
+		<button type="submit" name="submit" class="btn btn-primary btn-sm" value="1">正确</button>
+		<button type="submit" name="submit" class="btn btn-danger btn-sm" value="0">错误</button>
 		</div>
 	</div>
+	</form>
 %end
+<div class="row">
+	<div class="col-12 text-center">
+	<a href="?page=1&like={{like}}"> 第一页</a>
+	% if curr_page > 1:
+	<a href="?page={{curr_page - 1}}&like={{like}}"> 上一页</a>
+	% end
+	% if curr_page < max_page:
+	 <a href="?page={{curr_page + 1}}&like={{like}}">下一页</a>
+	% end
+	<a href="?page={{max_page}}&like={{like}}">最后页</a>
+	</div>
 </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-   	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/static/js/popper.min.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-  </body>
-</html>
-
+</div>

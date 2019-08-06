@@ -178,11 +178,11 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     '''
     items = []
     clauses = []
-    if rate_type:
+    if rate_type is not None:
         clauses.append(ItemRate.rate_type == rate_type)
     else:
         clauses.append(ItemRate.rate_type.is_null())
-    if rate_value:
+    if rate_value is not None:
         clauses.append(ItemRate.rate_value == rate_value)
     q = (Item.select(Item, ItemRate)
          .join(ItemRate, JOIN.LEFT_OUTER, attr='item_rate')

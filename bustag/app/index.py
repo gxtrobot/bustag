@@ -2,7 +2,7 @@ from bottle import route, run, template, static_file, request, response, redirec
 import bottle
 import os
 import sys
-from bustag.spider.db import get_items, RATE_TYPE, ItemRate, Item
+from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
 dirname = os.path.dirname(sys.argv[0])
 
 print(dirname)
@@ -16,18 +16,27 @@ def send_static(filepath):
 
 @route('/')
 def index():
-    items, page_info = get_items(page=1)
-    print(items[0])
+    rate_type = RATE_TYPE.SYSTEM_RATE.value
+    rate_value = int(request.query.get('like', RATE_VALUE.LIKE.value))
+    print(rate_value)
+    page = int(request.query.get('page', 1))
+    items, page_info = get_items(
+        rate_type=rate_type, rate_value=rate_value, page=page)
     print(bottle.TEMPLATE_PATH)
-    return template('index', items=items)
+    return template('index', items=items, page_info=page_info, like=rate_value)
 
 
 @route('/tagit')
 def tagit():
+    rate_value = request.query.get('like', None)
+    rate_type = None
+    if rate_value:
+        rate_value = int(rate_value)
+        rate_type = RATE_TYPE.USER_RATE
     page = int(request.query.get('page', 1))
-    print(page)
-    items, page_info = get_items(page=page)
-    return template('tagit', items=items, page_info=page_info)
+    items, page_info = get_items(
+        rate_type=rate_type, rate_value=rate_value, page=page)
+    return template('tagit', items=items, page_info=page_info, like=rate_value)
 
 
 @route('/tag/<id:int>', method='POST')

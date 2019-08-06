@@ -18,7 +18,7 @@ def recommend():
     recommend_count = sum(y_pred)
     for id, target in zip(ids, y_pred):
         item = Item.getit(id)
-        # ItemRate.saveit(rate_type, target, item)
+        ItemRate.saveit(rate_type, target, item)
     logger.debug(
         f'predicted {count} items, recommended {recommend_count}')
     return count, recommend_count

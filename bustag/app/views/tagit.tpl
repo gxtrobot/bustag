@@ -6,13 +6,13 @@
 	<div class="col-12">
 		<ul class="nav nav-tabs">
 		<li class="nav-item">
-			<a class="nav-link active" href="#">喜欢</a>
+			<a class="nav-link {{'active' if like is None else ''}}" href="?">未打标的</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#">不喜欢</a>
+			<a class="nav-link {{'active' if like==1 else ''}}" href="?like=1">喜欢</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" href="#">全部</a>
+			<a class="nav-link {{'active' if like==0 else ''}}" href="?like=0">不喜欢</a>
 		</li>
 		</ul>
 	</div>
