@@ -1,4 +1,4 @@
-% rebase('base.tpl', title='打标')
+% rebase('base.tpl', title='推荐', path=path)
 % curr_page = page_info[2]
 % max_page = page_info[1]
 
@@ -19,13 +19,13 @@
 </div>
 %#generate list of rows of items 
 %for item in items:
-<form action="/tag/{{item.id}}?page={{curr_page}}" method="post">
+<form action="/correct/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
-		<div class="col-12 col-sm-3">
+		<div class="col-12 col-md-4">
 		<img src={{item.cover_img_url}} width="200">
 		</div>
 			
-			<div class="col-6 col-sm-5">
+			<div class="col-6 col-md-5">
 			<p class="small text-muted">{{item.add_date}}</p>
 			<p class="small text-muted">id: {{item.id}}</p>
 			<h6>{{item.fanhao}} </h6>
@@ -36,7 +36,7 @@
 			</div>
 		
 			</div>
-		<div class="col-6 col-sm-4  align-self-center">
+		<div class="col-6 col-md-3  align-self-center">
 		<button type="submit" name="submit" class="btn btn-primary btn-sm" value="1">正确</button>
 		<button type="submit" name="submit" class="btn btn-danger btn-sm" value="0">错误</button>
 		</div>

@@ -1,3 +1,4 @@
+<%print(path)%>
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,7 +9,7 @@
     <!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 	
-    <title>{{title or '首页'}}</title>
+    <title>{{title or ''}}</title>
   </head>
   <body>
 
@@ -22,10 +23,10 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
+      <li class="nav-item {{ 'active' if path=='/' else ''}}">
         <a class="nav-link" href="/">推荐 <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item {{ 'active' if path=='/tagit' else ''}}">
         <a class="nav-link" href="/tagit">打标</a>
       </li>
       <li class="nav-item">
