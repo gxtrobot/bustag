@@ -9,6 +9,7 @@ from .parser import parse_item
 from .db import save
 router = get_router()
 counter = 0
+COUNT_EXIT = 100
 SYSTEM_EXIT = False
 
 
@@ -29,7 +30,7 @@ def verify_page_path(path, no):
 
 
 def check_exit():
-    if counter > 100 and not SYSTEM_EXIT:
+    if counter > COUNT_EXIT and not SYSTEM_EXIT:
         system_exit()
 
 
@@ -53,8 +54,8 @@ def process_item(text, path, fanhao):
     url = router.get_full_url(path)
     meta, tags = parse_item(text)
     meta.update(url=url)
-    print('meta keys', len(meta.keys()))
-    print('tag count', len(tags))
+#     print('meta keys', len(meta.keys()))
+#     print('tag count', len(tags))
     save(meta, tags)
     check_exit()
 
