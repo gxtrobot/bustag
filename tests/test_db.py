@@ -18,3 +18,10 @@ def test_getit():
     item = Item.getit(id)
     print(repr(item))
     assert item is not None
+
+
+def test_load_item():
+    id = 1251
+    item = Item.getit(id)
+    Item.loadit(item)
+    print(item.tags)

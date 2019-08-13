@@ -22,23 +22,30 @@
 <form action="/correct/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
 		<div class="col-12 col-md-4">
-		<img src={{item.cover_img_url}} width="200">
+		<img class="img-fluid img-thumbnail" src={{item.cover_img_url}}>
 		</div>
 			
-			<div class="col-6 col-md-5">
-			<p class="small text-muted">{{item.add_date}}</p>
-			<p class="small text-muted">id: {{item.id}}</p>
+			<div class="col-7 col-md-5">
+			<div class="small text-muted">id: {{item.id}}</div>
+			<div class="small text-muted">发行日期: {{item.release_date}}</div>
+			<div class="small text-muted">添加日期: {{item.add_date}}</div>
 			<h6>{{item.fanhao}} </h6>
-			<a href="{{item.url}}" target="_blank"> {{item.title}} </a>
+			<a href="{{item.url}}" target="_blank"> {{item.title[:30]}} </a>
 			<div>
-			<span class="badge badge-primary">高清</span>
-			<span class="badge badge-primary">高画质</span>
+			% for t in item.tags_dict['genre']:
+			<span class="badge badge-primary">{{t}}</span>
+			% end
+			</div>
+			<div>
+			% for t in item.tags_dict['star']:
+			<span class="badge badge-warning">{{t}}</span>
+			% end
 			</div>
 		
 			</div>
-		<div class="col-6 col-md-3  align-self-center">
-		<button type="submit" name="submit" class="btn btn-primary btn-sm" value="1">正确</button>
-		<button type="submit" name="submit" class="btn btn-danger btn-sm" value="0">错误</button>
+		<div class="col-5 col-md-3  align-self-center">
+		<button type="submit" name="submit" class="btn btn-primary mx-2" value="1">正确</button>
+		<button type="submit" name="submit" class="btn btn-danger" value="0">错误</button>
 		</div>
 	</div>
 	</form>

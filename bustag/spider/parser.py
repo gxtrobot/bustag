@@ -46,14 +46,17 @@ def parse_item(text):
                 tag_type = (spans[0].text)
                 tag_link = links[0].attrs['href']
                 tag_value = links[0].text
+            if tag_type != '' and tag_value != '':
+                tag_list.append(Tag(tag_type, tag_value, tag_link))
         else:
             for link in links:
-                tag_link = links[0].attrs['href']
-                tag_value = links[0].text
-        if 'genre' in tag_link:
-            tag_type = 'genre'
-        if 'star' in tag_link:
-            tag_type = 'star'
-        if tag_type != '' and tag_value != '':
-            tag_list.append(Tag(tag_type, tag_value, tag_link))
+                tag_link = link.attrs['href']
+                tag_value = link.text
+                if 'genre' in tag_link:
+                    tag_type = 'genre'
+                if 'star' in tag_link:
+                    tag_type = 'star'
+                if tag_type != '' and tag_value != '':
+                    tag_list.append(Tag(tag_type, tag_value, tag_link))
+
     return meta, tag_list

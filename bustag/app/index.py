@@ -2,6 +2,7 @@ from bottle import route, run, template, static_file, request, response, redirec
 import bottle
 import os
 import sys
+from collections import defaultdict
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
 from bustag.util import logger
 dirname = os.path.dirname(sys.argv[0])
@@ -19,10 +20,16 @@ def send_static(filepath):
 def index():
     rate_type = RATE_TYPE.SYSTEM_RATE.value
     rate_value = int(request.query.get('like', RATE_VALUE.LIKE.value))
-    print(rate_value)
     page = int(request.query.get('page', 1))
     items, page_info = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
+    for item in items:
+        tags = item.tags_list
+        tags_dict = defaultdict(list)
+        for t in item.tags_list:
+            if t.tag.type_ in ['genre', 'star']:
+                tags_dict[t.tag.type_].append(t.tag.value)
+        item.tags_dict = tags_dict
     print(bottle.TEMPLATE_PATH)
     return template('index', items=items, page_info=page_info, like=rate_value, path=request.path)
 

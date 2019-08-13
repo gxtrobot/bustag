@@ -32,7 +32,8 @@ class Item(BaseModel):
     title = CharField()
     fanhao = CharField()
     url = CharField(unique=True)
-    add_date = DateField()
+    release_date = DateField()
+    add_date = DateTimeField(default=datetime.datetime.now)
     meta_info = TextField()
 
     def __repr__(self):
@@ -59,10 +60,11 @@ class Item(BaseModel):
         item.cover_img_url = meta['cover_img_url']
         tags = []
         series = item.fanhao.split('-')[0]
-        for t in item.tags:
+        for t in item.tags_list:
             tags.append(t.tag.value)
         tags.append(series)
         tags = set(tags)
+        item.add_date = item.add_date.strftime('%Y-%m-%d %H:%M:%S')
         item.tags = tags
 
     @staticmethod
@@ -95,7 +97,7 @@ class Tag(BaseModel):
 
 
 class ItemTag(BaseModel):
-    item = ForeignKeyField(Item, backref='tags')
+    item = ForeignKeyField(Item, backref='tags_list')
     tag = ForeignKeyField(Tag, backref='items')
 
     @staticmethod
@@ -192,7 +194,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     q = (Item.select(Item, ItemRate)
          .join(ItemRate, JOIN.LEFT_OUTER, attr='item_rate')
          .where(reduce(operator.and_, clauses))
-         .order_by(Item.id.desc())
+         .order_by(ItemRate.id.desc())
          )
     total_items = q.count()
     if not page is None:

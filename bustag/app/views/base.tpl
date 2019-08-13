@@ -41,6 +41,15 @@
 
 {{!base}}
 
+<footer class="my-3">
+  <div class="container">
+  <div class="col">
+  <p class="text-center">
+  Developed by 凤凰山@2019 <a href="https://github.com/gxtrobot/bustag" target="_blank">github</a>
+  </p>
+  </div>
+</div>
+</footer>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
    	<script type="text/javascript" src="/static/js/jquery.min.js"></script>

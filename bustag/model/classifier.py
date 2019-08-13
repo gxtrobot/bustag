@@ -55,7 +55,7 @@ def recommend():
     for id, y in zip(ids, y_pred):
         if y == 1:
             count += 1
-            print(id, y)
+            # print(id, y)
         rate_type = RATE_TYPE.SYSTEM_RATE
         rate_value = y
         item_id = id
@@ -63,3 +63,9 @@ def recommend():
                              rate_value=rate_value, item_id=item_id)
         item_rate.save()
     return total, count
+
+
+if __name__ == "__main__":
+    total, count = recommend()
+    print('total:', total)
+    print('recommended:', count)
