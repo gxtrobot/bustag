@@ -6,8 +6,5 @@ javbus:
 recommend:
 	$(PYTHON3) -m bustag.model.classifier
 
-pep8:
-	pep8 *.py
-
-wc:
-	grep -v '^ *\(#.*\)\?$$' crawling.py | wc -l
+run:
+	docker run --rm -d -p 8080:8080 bustag-app-dev 
