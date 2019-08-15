@@ -1,0 +1,2 @@
+*/2 * * * * /app/docker/run_download.sh >> /var/log/bustag.log
+

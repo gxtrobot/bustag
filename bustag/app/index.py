@@ -4,6 +4,7 @@ import os
 import sys
 from collections import defaultdict
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
+import bustag.model.classifier as clf
 from bustag.util import logger
 dirname = os.path.dirname(sys.argv[0])
 
@@ -87,6 +88,21 @@ def correct(id):
     url = f'/?page={page}&like={like}'
     print(url)
     redirect(url)
+
+
+@route('/other')
+def other_settings():
+    try:
+        _, model_scores = clf.load()
+    except FileNotFoundError:
+        model_scores = None
+    return template('other', path=request.path, model_scores=model_scores)
+
+
+@route('/do-training')
+def do_training():
+    _, model_scores = clf.train()
+    return template('other', path=request.path, model_scores=model_scores)
 
 
 run(host='0.0.0.0', port=8080, debug=True, reloader=True)

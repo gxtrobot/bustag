@@ -25,13 +25,13 @@ def parse_item(text):
     cover_img_url = html.find(cover_img_css)[0].attrs['href']
     tags_css = 'body > div.container > div.row.movie > div.col-md-3.info'
     tags = html.find(tags_css)[0].find('p')
-    add_date = tags[1].text
+    release_date = tags[1].text
     length = tags[2].text
     # meta data
     meta = {}
     meta['fanhao'], meta['title'] = title.split(maxsplit=1)
     meta['cover_img_url'] = cover_img_url
-    meta['add_date'] = add_date.split()[1]
+    meta['release_date'] = release_date.split()[1]
     meta['length'] = re.search(r'\d+', length).group()
 
     tag_list = []

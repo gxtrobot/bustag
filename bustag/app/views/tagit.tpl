@@ -27,13 +27,20 @@
 		</div>
 			
 			<div class="col-6 col-md-5">
-			<p class="small text-muted">{{item.add_date}}</p>
-			<p class="small text-muted">id: {{item.id}}</p>
+			<div class="small text-muted">id: {{item.id}}</div>
+			<div class="small text-muted">发行日期: {{item.release_date}}</div>
+			<div class="small text-muted">添加日期: {{item.add_date}}</div>
 			<h6>{{item.fanhao}} </h6>
-			<a href="{{item.url}}" target="_blank"> {{item.title}} </a>
+			<a href="{{item.url}}" target="_blank"> {{item.title[:30]}} </a>
 			<div>
-			<span class="badge badge-primary">高清</span>
-			<span class="badge badge-primary">高画质</span>
+			% for t in item.tags_dict['genre']:
+			<span class="badge badge-primary">{{t}}</span>
+			% end
+			</div>
+			<div>
+			% for t in item.tags_dict['star']:
+			<span class="badge badge-warning">{{t}}</span>
+			% end
 			</div>
 		
 			</div>

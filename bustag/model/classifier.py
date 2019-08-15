@@ -11,13 +11,18 @@ from bustag.util import logger
 model_path = './data/model/model.pkl'
 
 
+def load():
+    model_data = load_model(model_path)
+    return model_data
+
+
 def create_model():
     knn = KNeighborsClassifier(n_neighbors=11)
     return knn
 
 
 def predict(X_test):
-    model = load_model(model_path)
+    model, _ = load()
     y_pred = model.predict(X_test)
     return y_pred
 
@@ -28,20 +33,29 @@ def train():
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     confusion_mtx = confusion_matrix(y_test, y_pred)
-    evaluate(confusion_mtx, y_test, y_pred)
-    dump_model(model_path, model)
+    scores = evaluate(confusion_mtx, y_test, y_pred)
+    models_data = (model, scores)
+    dump_model(model_path, models_data)
     logger.info('new model trained')
-    return model
+    return models_data
 
 
 def evaluate(confusion_mtx, y_test, y_pred):
     tn, fp, fn, tp = confusion_mtx.ravel()
+    # accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
     logger.info(f'tp: {tp}, fp: {fp}')
     logger.info(f'fn: {fn}, tn: {tn}')
-    logger.info(f'accuracy_score: {accuracy_score(y_test, y_pred)}')
-    logger.info(f'precision_score: {precision_score(y_test, y_pred)}')
-    logger.info(f'recall_score: {recall_score(y_test, y_pred)}')
-    logger.info(f'f1_score: {f1_score(y_test, y_pred)}')
+    # logger.info(f'accuracy_score: {accuracy}')
+    logger.info(f'precision_score: {precision}')
+    logger.info(f'recall_score: {recall}')
+    logger.info(f'f1_score: {f1}')
+    model_scores = dict(precision=precision, recall=recall, f1=f1)
+    model_scores = {key: float('{:.2f}'.format(value))
+                    for key, value in model_scores.items()}
+    return model_scores
 
 
 def recommend():

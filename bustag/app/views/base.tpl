@@ -17,7 +17,7 @@
   <div class="row">
     <div class="col-12">
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#"></a>
+  <a class="navbar-brand" href="#">BUSTAG</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -30,7 +30,7 @@
         <a class="nav-link" href="/tagit">打标</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">其他</a>
+        <a class="nav-link" href="/other">其他</a>
       </li>
     </ul>
   </div>

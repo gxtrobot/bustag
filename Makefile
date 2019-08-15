@@ -6,5 +6,8 @@ javbus:
 recommend:
 	$(PYTHON3) -m bustag.model.classifier
 
+build:
+	docker build -t  bustag-app-dev .
+	
 run:
 	docker run --rm -d -p 8080:8080 bustag-app-dev 

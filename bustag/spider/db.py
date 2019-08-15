@@ -41,14 +41,14 @@ class Item(BaseModel):
 
     @staticmethod
     def saveit(meta_info):
-        item_add_date = date.fromisoformat(meta_info.pop('add_date'))
+        item_release_date = date.fromisoformat(meta_info.pop('release_date'))
         item_fanhao = meta_info.pop('fanhao')
         item_title = meta_info.pop('title')
         item_url = meta_info.pop('url')
         item_meta = json.dumps(meta_info)
         try:
             item = Item.create(fanhao=item_fanhao, title=item_title, url=item_url,
-                               add_date=item_add_date, meta_info=item_meta)
+                               release_date=item_release_date, meta_info=item_meta)
             logger.debug(f'save item:  {item}')
         except IntegrityError as ex:
             raise ExistError()
@@ -163,10 +163,10 @@ def save(meta_info, tags):
 def test_save():
     item_url = 'https://www.cdnbus.bid/MADM-116'
     item_title = 'test item'
-    item_add_date = date(2019, 7, 19)
+    item_release_date = date(2019, 7, 19)
     item_meta_info = ''
     item = Item(title=item_title, url=item_url,
-                add_date=item_add_date, meta_info=item_meta_info)
+                release_date=item_release_date, meta_info=item_meta_info)
     item.save()
 
     tag1 = Tag.create(type_='genre', value='素人',
