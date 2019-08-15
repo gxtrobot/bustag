@@ -7,9 +7,9 @@ import signal
 from aspider.routeing import get_router
 from .parser import parse_item
 from .db import save
+from bustag.util import APP_CONFIG
 router = get_router()
 counter = 0
-COUNT_EXIT = 100
 SYSTEM_EXIT = False
 
 
@@ -30,7 +30,8 @@ def verify_page_path(path, no):
 
 
 def check_exit():
-    if counter > COUNT_EXIT and not SYSTEM_EXIT:
+    count_exit = APP_CONFIG['download.count']
+    if counter > count_exit and not SYSTEM_EXIT:
         system_exit()
 
 
