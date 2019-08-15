@@ -6,13 +6,13 @@ from sklearn.neighbors import KNeighborsClassifier
 from bustag.model.prepare import prepare_data, prepare_predict_data
 from bustag.model.persist import load_model, dump_model
 from bustag.spider.db import RATE_TYPE, ItemRate
-from bustag.util import logger
+from bustag.util import logger, get_data_path
 
-model_path = './data/model/model.pkl'
+MODEL_FILE = 'model/model.pkl'
 
 
 def load():
-    model_data = load_model(model_path)
+    model_data = load_model(get_data_path(MODEL_FILE))
     return model_data
 
 
@@ -35,7 +35,7 @@ def train():
     confusion_mtx = confusion_matrix(y_test, y_pred)
     scores = evaluate(confusion_mtx, y_test, y_pred)
     models_data = (model, scores)
-    dump_model(model_path, models_data)
+    dump_model(get_data_path(MODEL_FILE), models_data)
     logger.info('new model trained')
     return models_data
 

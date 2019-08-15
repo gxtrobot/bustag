@@ -7,12 +7,11 @@ import operator
 from functools import reduce
 import json
 from peewee import *
-import logging
 from enum import IntEnum
+from bustag.util import logger, get_data_path
 
-db = SqliteDatabase('bus.db')
-
-logger = logging.getLogger(__name__)
+DB_FILE = 'bus.db'
+db = SqliteDatabase(get_data_path(DB_FILE))
 
 
 class BaseModel(Model):

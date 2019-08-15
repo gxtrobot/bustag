@@ -10,8 +10,9 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 from bustag.spider.db import get_items, RATE_TYPE, ItemRate, Item
 from bustag.model.persist import dump_model, load_model
+from bustag.util import logger, get_data_path
 
-binarizer_path = './data/model/label_binarizer.pkl'
+BINARIZER_PATH = 'model/label_binarizer.pkl'
 
 
 def load_data():
@@ -49,7 +50,7 @@ def process_data(df):
 
     mlb = MultiLabelBinarizer()
     X = mlb.fit_transform(X.tags.values)
-    dump_model(binarizer_path, mlb)
+    dump_model(get_data_path(BINARIZER_PATH), mlb)
     return X, y
 
 
@@ -75,7 +76,7 @@ def prepare_predict_data():
     page = None
     unrated_items, _ = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
-    mlb = load_model(binarizer_path)
+    mlb = load_model(get_data_path(BINARIZER_PATH))
     dicts = (as_dict(item) for item in unrated_items)
     df = pd.DataFrame(dicts, columns=['id', 'tags'])
     df.set_index('id', inplace=True)
