@@ -6,9 +6,7 @@ from collections import defaultdict
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
 import bustag.model.classifier as clf
 from bustag.util import logger
-dirname = os.path.dirname(sys.argv[0])
-
-print(dirname)
+dirname = os.path.dirname(os.path.realpath(__file__))
 bottle.TEMPLATE_PATH.insert(0, dirname+'/views/')
 
 
@@ -25,13 +23,7 @@ def index():
     items, page_info = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
     for item in items:
-        tags = item.tags_list
-        tags_dict = defaultdict(list)
-        for t in item.tags_list:
-            if t.tag.type_ in ['genre', 'star']:
-                tags_dict[t.tag.type_].append(t.tag.value)
-        item.tags_dict = tags_dict
-    print(bottle.TEMPLATE_PATH)
+        Item.get_tags_dict(item)
     return template('index', items=items, page_info=page_info, like=rate_value, path=request.path)
 
 
@@ -45,6 +37,8 @@ def tagit():
     page = int(request.query.get('page', 1))
     items, page_info = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
+    for item in items:
+        Item.get_tags_dict(item)
     return template('tagit', items=items, page_info=page_info, like=rate_value, path=request.path)
 
 
@@ -105,4 +99,7 @@ def do_training():
     return template('other', path=request.path, model_scores=model_scores)
 
 
-run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+app = bottle.default_app()
+
+if __name__ == "__main__":
+    run(host='0.0.0.0', port=8080, debug=True, reloader=True)

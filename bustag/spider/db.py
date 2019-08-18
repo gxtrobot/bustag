@@ -8,7 +8,8 @@ from functools import reduce
 import json
 from peewee import *
 from enum import IntEnum
-from bustag.util import logger, get_data_path
+from collections import defaultdict
+from bustag.util import logger, get_data_path, to_localtime
 
 DB_FILE = 'bus.db'
 db = SqliteDatabase(get_data_path(DB_FILE))
@@ -63,13 +64,22 @@ class Item(BaseModel):
             tags.append(t.tag.value)
         tags.append(series)
         tags = set(tags)
-        item.add_date = item.add_date.strftime('%Y-%m-%d %H:%M:%S')
         item.tags = tags
+        item.add_date = to_localtime(item.add_date)
 
     @staticmethod
     def getit(id):
         item = Item.get_by_id(id)
         return item
+
+    @staticmethod
+    def get_tags_dict(item):
+        tags = item.tags_list
+        tags_dict = defaultdict(list)
+        for t in item.tags_list:
+            if t.tag.type_ in ['genre', 'star']:
+                tags_dict[t.tag.type_].append(t.tag.value)
+        item.tags_dict = tags_dict
 
 
 class Tag(BaseModel):

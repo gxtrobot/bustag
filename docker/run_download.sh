@@ -1,3 +1,4 @@
 #!/bin/bash
 cd /app
-python -m bustag.spider.bus_spider https://www.cdnbus.bid
+/usr/local/bin/python -m bustag.main download
+/usr/local/bin/python -m bustag.main recommend

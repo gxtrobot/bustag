@@ -63,23 +63,22 @@ def recommend():
     use trained model to recommend items
     '''
     ids, X = prepare_predict_data()
+    if len(X) == 0:
+        logger.error(
+            f'no data for recommend')
+        return
     count = 0
     total = len(ids)
     y_pred = predict(X)
     for id, y in zip(ids, y_pred):
         if y == 1:
             count += 1
-            # print(id, y)
         rate_type = RATE_TYPE.SYSTEM_RATE
         rate_value = y
         item_id = id
         item_rate = ItemRate(rate_type=rate_type,
                              rate_value=rate_value, item_id=item_id)
         item_rate.save()
+    logger.debug(
+        f'predicted {total} items, recommended {count}')
     return total, count
-
-
-if __name__ == "__main__":
-    total, count = recommend()
-    print('total:', total)
-    print('recommended:', count)

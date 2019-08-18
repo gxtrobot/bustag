@@ -1,6 +1,7 @@
 import logging
 import os
 import configparser
+import pytz
 
 logger = logging.getLogger('bustag')
 
@@ -28,6 +29,14 @@ def load_config():
             value = conf.get(section, key)
             key = section + '.' + key
             APP_CONFIG[key.lower()] = value
+
+
+def to_localtime(utc_dt):
+    local_tz = pytz.timezone('Asia/Shanghai')
+    local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(local_tz)
+    format = '%Y-%m-%d %H:%M:%S'
+    local_dt = local_tz.normalize(local_dt)
+    return local_dt.strftime(format)
 
 
 def init():

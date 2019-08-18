@@ -30,7 +30,7 @@ def verify_page_path(path, no):
 
 
 def check_exit():
-    count_exit = APP_CONFIG['download.count']
+    count_exit = int(APP_CONFIG['download.count'])
     if counter > count_exit and not SYSTEM_EXIT:
         system_exit()
 
