@@ -11,7 +11,16 @@
 - Docker 镜像一键运行, 省去新手配置项目的麻烦
 - 项目访问地址: localhost:8080
 
-## 如何运行改项目
+## 系统截图(隐藏了左边封面图片)
+
+- 推荐页面
+  ![](./docs/recommend.png)
+- 打标页面
+  ![](./docs/tagit.png)
+- 其他页面
+  ![](./docs/other.png)
+
+## 如何运行项目
 
 - 懂 python 开发的可以 clone 本项目, 建立一个虚拟环境并按照 requirements.txt 的 python 包后, 在项目根目录下
   直接运行
@@ -37,6 +46,16 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
     docker run --rm -it -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
 
   ```
+
+## 如何使用项目
+
+请按照以下顺序
+
+1. 到打标页面进行打标, 达到一定数量(喜欢+不喜欢), 比如 300
+2. 到其他页面训练模型
+3. 坐等系统自动推荐
+4. 在推荐页面进行确认(确认过的数据转为打标数据)
+5. 积累更多打标数据, 再次训练模型, 打标数据越多模型效果越好
 
 ## 其他问题
 
