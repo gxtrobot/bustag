@@ -30,6 +30,7 @@ def index():
 @route('/tagit')
 def tagit():
     rate_value = request.query.get('like', None)
+    rate_value = None if rate_value == 'None' else rate_value
     rate_type = None
     if rate_value:
         rate_value = int(rate_value)
@@ -95,11 +96,17 @@ def other_settings():
 
 @route('/do-training')
 def do_training():
-    _, model_scores = clf.train()
-    return template('other', path=request.path, model_scores=model_scores)
+    error_msg = None
+    model_scores = None
+    try:
+        _, model_scores = clf.train()
+    except ValueError as ex:
+        error_msg = ' '.join(ex.args)
+    return template('other', path=request.path, model_scores=model_scores, error_msg=error_msg)
 
 
 app = bottle.default_app()
 
 if __name__ == "__main__":
+    # run(host='0.0.0.0', port=8080, server='gunicorn')
     run(host='0.0.0.0', port=8080, debug=True, reloader=True)

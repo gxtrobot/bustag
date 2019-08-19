@@ -7,6 +7,7 @@ logger = logging.getLogger('bustag')
 
 DATA_PATH = './data/'
 CONFIG_FILE = 'config.ini'
+MODEL_PATH = 'model/'
 APP_CONFIG = {}
 
 
@@ -39,9 +40,17 @@ def to_localtime(utc_dt):
     return local_dt.strftime(format)
 
 
+def check_model_folder():
+    model_path = os.path.join(DATA_PATH, MODEL_PATH)
+    if not os.path.exists(model_path):
+        logger.info('created model folder')
+        os.mkdir(model_path)
+
+
 def init():
     setup_logging()
     load_config()
+    check_model_folder()
 
 
 init()

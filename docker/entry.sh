@@ -14,4 +14,4 @@ fi
 # start cron
 service cron start
 
-python bustag/app/index.py
+gunicorn bustag.app.index:app --bind='0.0.0.0:8080'

@@ -6,9 +6,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from bustag.model.prepare import prepare_data, prepare_predict_data
 from bustag.model.persist import load_model, dump_model
 from bustag.spider.db import RATE_TYPE, ItemRate
-from bustag.util import logger, get_data_path
+from bustag.util import logger, get_data_path, MODEL_PATH
 
-MODEL_FILE = 'model/model.pkl'
+MODEL_FILE = MODEL_PATH + 'model.pkl'
+MIN_TRAIN_NUM = 100
 
 
 def load():
@@ -30,6 +31,8 @@ def predict(X_test):
 def train():
     model = create_model()
     X_train, X_test, y_train, y_test = prepare_data()
+    if len(X_train) < MIN_TRAIN_NUM:
+        raise ValueError('训练数据不足, 无法训练模型')
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     confusion_mtx = confusion_matrix(y_test, y_pred)

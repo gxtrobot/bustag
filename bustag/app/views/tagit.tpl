@@ -1,7 +1,5 @@
 % rebase('base.tpl', title='打标', path=path)
 % curr_page = page_info[2]
-% max_page = page_info[1]
-% total_items = page_info[0]
 <div class="container">
  <div class="row py-3">
 	<div class="col-12">
@@ -51,19 +49,6 @@
 	</div>
 	</form>
 %end
-<div class="row">
-	<div class="col-12 text-center">
-	<h6>
-	<span>共 {{total_items}}条</span>
-	<a href="?page=1&like={{like}}"> 第一页</a>
-	% if curr_page > 1:
-	<a href="?page={{curr_page - 1}}&like={{like}}"> 上一页</a>
-	% end
-	% if curr_page < max_page:
-	 <a href="?page={{curr_page + 1}}&like={{like}}">下一页</a>
-	% end
-	<a href="?page={{max_page}}&like={{like}}">最后页</a>
-	</h6>
-	</div>
-</div>
+% include('pagination.tpl', page_info=page_info)
+
 </div>

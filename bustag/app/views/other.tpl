@@ -22,6 +22,9 @@
         <div class="card-header">
            <h6> 当前模型数据 </h6>
         </div>
+        % if defined('error_msg') and error_msg is not None:
+        <p class="card-text text-danger">{{error_msg}} </a>
+        % end
         % if model_scores is not None:
         <ul class="list-group list-group-flush">
             <li class="list-group-item">准确率: {{model_scores['precision']}}</li>
@@ -40,7 +43,7 @@
     <div class="card-header" id="headingTwo">
       <h2 class="mb-0">
         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          启动下载
+          
         </button>
       </h2>
     </div>

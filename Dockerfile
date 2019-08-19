@@ -57,4 +57,6 @@ RUN chmod 755 /app/docker/*.sh
 
 EXPOSE 8080
 
+LABEL maintainer="gxtrobot <gxtrobot@gmail.com>"
+
 CMD ["/app/docker/entry.sh"]

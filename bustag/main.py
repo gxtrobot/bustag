@@ -17,7 +17,10 @@ def recommend():
     '''
     根据现有模型预测推荐数据
     '''
-    clf.recommend()
+    try:
+        clf.recommend()
+    except FileNotFoundError:
+        click.echo('还没有训练好的模型, 无法推荐')
 
 
 @click.command()

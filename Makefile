@@ -14,3 +14,7 @@ run:
 
 server:
 	gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
+
+publish:
+	docker tag bustag-app-dev gxtrobot/bustag-app:latest
+	docker push gxtrobot/bustag-app:latest

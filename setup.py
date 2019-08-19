@@ -23,7 +23,7 @@ setup(
     author_email="gxtrobot@gmail.com",
 
     description="a tag and recommend system for old bus driver",
-    long_description=read("README.rst"),
+    long_description=read("README.md"),
 
     packages=find_packages(exclude=('tests',)),
 

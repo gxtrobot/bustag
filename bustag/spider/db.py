@@ -153,8 +153,8 @@ class ItemRate(BaseModel):
 
     @staticmethod
     def get_by_itemid(item_id):
-        item_rate = ItemRate.select().where(ItemRate.item_id == item_id).get()
-        return item_rate
+        item_rates = ItemRate.select().where(ItemRate.item_id == item_id).limit(1)
+        return item_rates[0] if len(item_rates) > 0 else None
 
 
 def save(meta_info, tags):
