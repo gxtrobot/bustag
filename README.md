@@ -15,8 +15,10 @@
 
 - 推荐页面
   ![](./docs/recommend.png)
+
 - 打标页面
   ![](./docs/tagit.png)
+
 - 其他页面
   ![](./docs/other.png)
 
@@ -49,7 +51,7 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
 
 ## 如何使用项目
 
-请按照以下顺序
+### 请按照以下顺序
 
 1. 到打标页面进行打标, 达到一定数量(喜欢+不喜欢), 比如 300
 2. 到其他页面训练模型
@@ -57,10 +59,26 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
 4. 在推荐页面进行确认(确认过的数据转为打标数据)
 5. 积累更多打标数据, 再次训练模型, 打标数据越多模型效果越好
 
+### data 目录文件说明
+
+```
+|____bus.db
+|____config.ini
+|____crontab.txt
+|____model
+| |____ label_binarizer.pkl
+| |____model.pkl
+```
+
+- config.ini, (系统配置文件, 必须, 系统启动时候需要此文件)
+- bus.db (数据库文件, 可选, 但是可以放一个[现成的库, 有 2000 条数据, 方便直接开始打标, 不需要等下载](./data/bus.db))
+- crontab.txt (定时下载配置文件, 可选, [参考例子](./docker/crontab.txt))
+- model 目录(系统训练生成的模型)
+
 ## 其他问题
 
 1. 改变自动下载的频率
-   系统默认为每 30 分钟下载一次, 如果需要自定义可以在 data 下建立一个[crontab.txt]()文件, 该文件是基于 linux crontab 执行, ,具体可以看[wiki](https://zh.wikipedia.org/zh-hans/Cron)
+   系统默认为每 30 分钟下载一次, 如果需要自定义可以在 data 下建立一个[crontab.txt](./docker/crontab.txt)文件, 该文件是基于 linux crontab 执行, ,具体可以看[wiki](https://zh.wikipedia.org/zh-hans/Cron)
 
 ```
 */30 * * * * /app/docker/run_download.sh >> /var/log/bustag.log 2>&1
