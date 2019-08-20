@@ -112,6 +112,6 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
 docker run --rm -d -v $(pwd)/data:/app/data -p 8000:8080 gxtrobot/bustag-app
 ```
 
-8. 如何备份数据库
+9. 如何备份数据库
    系统使用的数据库保存在 data 目录下的 bus.db, 如果有需要可以将此文件拷贝一份作为备份, 比如在打标测试模型时, 如果不想使用当前打标数据, 可以将数据库恢复到原来的版本
    该数据库为 sqlite 格式, 可以直接使用软件打开, 比如 [DB Browser for Sqlite](https://sqlitebrowser.org/), 该软件支持多平台
