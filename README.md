@@ -47,7 +47,7 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
     docker run --rm -d -v $(pwd)/data:/app/data -p 8080:8080 gxtrobot/bustag-app
 
     windows powershell
-    docker run --rm -it -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
+    docker run --rm -d -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
 
   ```
 
