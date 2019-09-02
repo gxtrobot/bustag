@@ -2,6 +2,10 @@
 
 **Bustag** 是一个基于 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
 
+新录了个视频, 演示了如何使用docker运行项目 
+- (linux/mac) https://pan.baidu.com/s/13a_7pE-uK0Jt7w2anVJV9A  提取码: za4m
+- (win10) https://pan.baidu.com/s/1dtUFvMvrYlw5plctaky46w 提取码: yd2y
+
 ## 系统功能
 
 - 自动抓取最新车牌信息, 抓取频率可以自定义
@@ -45,7 +49,7 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
     docker run --rm -d -v $(pwd)/data:/app/data -p 8080:8080 gxtrobot/bustag-app
 
     windows powershell
-    docker run --rm -it -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
+    docker run --rm -d -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
 
   ```
 
