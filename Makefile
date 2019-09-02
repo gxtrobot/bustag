@@ -1,7 +1,7 @@
 PYTHON3=python3
 
 javbus:
-	$(PYTHON3) -m bustag.spider.bus_spider https://www.cdnbus.bid
+	$(PYTHON3) -m bustag.main download
 
 recommend:
 	$(PYTHON3) -m bustag.main recommend
@@ -13,7 +13,7 @@ run:
 	docker run --rm -d -v `pwd`/data:/app/data -p 8080:8080 bustag-app-dev 
 
 server:
-	gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
+	$(PYTHON3) bustag/app/index.py
 
 publish:
 	docker tag bustag-app-dev gxtrobot/bustag-app:latest

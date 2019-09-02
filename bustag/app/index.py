@@ -2,10 +2,12 @@ from bottle import route, run, template, static_file, request, response, redirec
 import bottle
 import os
 import sys
+import threading
 from collections import defaultdict
+from bustag.app.schedule import start_scheduler
+from bustag.util import logger
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
 import bustag.model.classifier as clf
-from bustag.util import logger
 dirname = os.path.dirname(os.path.realpath(__file__))
 bottle.TEMPLATE_PATH.insert(0, dirname+'/views/')
 
@@ -107,6 +109,13 @@ def do_training():
 
 app = bottle.default_app()
 
+
+def start_app():
+    t = threading.Thread(target=start_scheduler, daemon=True)
+    t.start()
+    # run(host='0.0.0.0', server='paste', port=8000, debug=True, reloader=True)
+    run(host='0.0.0.0', port=8000, debug=True)
+
+
 if __name__ == "__main__":
-    # run(host='0.0.0.0', port=8080, server='gunicorn')
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    start_app()

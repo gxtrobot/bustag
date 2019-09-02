@@ -13,11 +13,17 @@ counter = 0
 SYSTEM_EXIT = False
 
 
+def reset_download():
+    global counter, SYSTEM_EXIT
+    counter = 0
+    SYSTEM_EXIT = False
+
+
 def system_exit():
     global SYSTEM_EXIT
     if not SYSTEM_EXIT:
         SYSTEM_EXIT = True
-        raise KeyboardInterrupt()
+        router.stop()
 
 
 def verify_page_path(path, no):

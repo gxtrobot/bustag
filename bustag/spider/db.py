@@ -9,7 +9,7 @@ import json
 from peewee import *
 from enum import IntEnum
 from collections import defaultdict
-from bustag.util import logger, get_data_path, to_localtime
+from bustag.util import logger, get_data_path, format_datetime
 
 DB_FILE = 'bus.db'
 db = SqliteDatabase(get_data_path(DB_FILE))
@@ -65,7 +65,7 @@ class Item(BaseModel):
         tags.append(series)
         tags = set(tags)
         item.tags = tags
-        item.add_date = to_localtime(item.add_date)
+        item.add_date = format_datetime(item.add_date)
 
     @staticmethod
     def getit(id):
@@ -203,7 +203,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     q = (Item.select(Item, ItemRate)
          .join(ItemRate, JOIN.LEFT_OUTER, attr='item_rate')
          .where(reduce(operator.and_, clauses))
-         .order_by(ItemRate.id.desc())
+         .order_by(Item.id.desc())
          )
     total_items = q.count()
     if not page is None:

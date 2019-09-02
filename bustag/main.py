@@ -29,6 +29,7 @@ def download(count):
     """
     下载更新数据
     """
+    print('start download')
     sys.argv = sys.argv[:1]
     if count is not None:
         APP_CONFIG['download.count'] = count

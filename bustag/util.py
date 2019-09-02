@@ -32,6 +32,11 @@ def load_config():
             APP_CONFIG[key.lower()] = value
 
 
+def format_datetime(dt):
+    format = '%Y-%m-%d %H:%M:%S'
+    return dt.strftime(format)
+
+
 def to_localtime(utc_dt):
     local_tz = pytz.timezone('Asia/Shanghai')
     local_dt = utc_dt.replace(tzinfo=pytz.utc).astimezone(local_tz)
