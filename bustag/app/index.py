@@ -1,15 +1,19 @@
-from bottle import route, run, template, static_file, request, response, redirect
-import bottle
-import os
-import sys
-import threading
 from collections import defaultdict
-from bustag.app.schedule import start_scheduler
-from bustag.util import logger
+import threading
+import sys
+import os
+import bottle
+from multiprocessing import freeze_support
+from bottle import route, run, template, static_file, request, response, redirect
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
-import bustag.model.classifier as clf
+from bustag.util import logger, get_cwd
+from bustag.app.schedule import start_scheduler
+
 dirname = os.path.dirname(os.path.realpath(__file__))
-bottle.TEMPLATE_PATH.insert(0, dirname+'/views/')
+if getattr(sys, 'frozen', False):
+    dirname = sys._MEIPASS
+print('dirname:' + dirname)
+bottle.TEMPLATE_PATH.insert(0, dirname + '/views/')
 
 
 @route('/static/<filepath:path>')
@@ -111,11 +115,13 @@ app = bottle.default_app()
 
 
 def start_app():
-    t = threading.Thread(target=start_scheduler, daemon=True)
+    t = threading.Thread(target=start_scheduler)
     t.start()
-    # run(host='0.0.0.0', server='paste', port=8000, debug=True, reloader=True)
-    run(host='0.0.0.0', port=8000, debug=True)
+    run(host='0.0.0.0', server='paste', port=8000, debug=True)
+    # run(host='0.0.0.0', port=8000, debug=True)
 
 
 if __name__ == "__main__":
+    freeze_support()
+    import bustag.model.classifier as clf
     start_app()

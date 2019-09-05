@@ -20,11 +20,11 @@
 %for item in items:
 <form action="/tag/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
-		<div class="col-12 col-md-3">
-		<img src={{item.cover_img_url}} width="200">
+		<div class="col-12 col-md-4">
+		<img class="img-fluid img-thumbnail" src={{item.cover_img_url}}>
 		</div>
 			
-			<div class="col-6 col-md-5">
+			<div class="col-7 col-md-5">
 			<div class="small text-muted">id: {{item.id}}</div>
 			<div class="small text-muted">发行日期: {{item.release_date}}</div>
 			<div class="small text-muted">添加日期: {{item.add_date}}</div>
@@ -42,7 +42,7 @@
 			</div>
 		
 			</div>
-		<div class="col-6 col-md-4  align-self-center">
+		<div class="col-5 col-md-3  align-self-center">
 		<button type="submit" name="submit" class="btn btn-primary btn-sm" value="1">喜欢</button>
 		<button type="submit" name="submit" class="btn btn-danger btn-sm" value="0">不喜欢</button>
 		</div>

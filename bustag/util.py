@@ -1,14 +1,22 @@
 import logging
 import os
+import sys
 import configparser
 import pytz
 
 logger = logging.getLogger('bustag')
 
-DATA_PATH = './data/'
+DATA_PATH = 'data/'
 CONFIG_FILE = 'config.ini'
 MODEL_PATH = 'model/'
 APP_CONFIG = {}
+
+
+def get_cwd():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    else:
+        return os.getcwd()
 
 
 def setup_logging():
@@ -17,7 +25,8 @@ def setup_logging():
 
 
 def get_data_path(file):
-    file_path = os.path.join(DATA_PATH, file)
+    cwd = get_cwd()
+    file_path = os.path.join(cwd, DATA_PATH, file)
     return file_path
 
 
@@ -53,6 +62,7 @@ def check_model_folder():
 
 
 def init():
+    print(f'CWD: {get_cwd()}')
     setup_logging()
     load_config()
     check_model_folder()

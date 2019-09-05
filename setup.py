@@ -4,6 +4,7 @@ import re
 
 from setuptools import find_packages
 from setuptools import setup
+from bustag import __version__
 
 
 def read(filename):
@@ -15,8 +16,8 @@ def read(filename):
 
 setup(
     name="bustag",
-    version="0.1.0",
-    url="https://github.com/borntyping/cookiecutter-pypackage-minimal",
+    version=__version__,
+    url="https://github.com/gxtrobot/bustag",
     license='MIT',
 
     author="gxtrobot",
