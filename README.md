@@ -2,18 +2,31 @@
 
 **Bustag** 是一个基于 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
 
-新录了个视频, 演示了如何使用docker运行项目 
+# windows, mac 绿色版下载地址
+  链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
+
+  压缩包密码: gxtrobot
+
+## 更新
+  ### 2019-9-6 0.1.1版发布
+  - 修复部分bug
+  - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用, 只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
+
+
+
+新录了个视频, 演示了如何使用docker运行项目
 - (linux/mac) https://pan.baidu.com/s/13a_7pE-uK0Jt7w2anVJV9A  提取码: za4m
 - (win10) https://pan.baidu.com/s/1dtUFvMvrYlw5plctaky46w 提取码: yd2y
 
 ## 系统功能
 
 - 自动抓取最新车牌信息, 抓取频率可以自定义
+- 系统启动后自动开启一次下载, 然后安装设置抓取频率下载
 - 车牌打标功能
 - 模型训练, 基于当前所有打标数据训练模型
 - 有了模型后, 自动预测判断是否喜欢
 - Docker 镜像一键运行, 省去新手配置项目的麻烦
-- 项目访问地址: localhost:8080
+- 项目访问地址: localhost:8000
 
 ## 系统截图(隐藏了左边封面图片)
 
@@ -28,17 +41,24 @@
 
 ## 如何运行项目
 
-- 懂 python 开发的可以 clone 本项目, 建立一个虚拟环境并按照 requirements.txt 的 python 包后, 在项目根目录下
+  ###  windows , mac绿色版如何使用
+  下载zip包后解压缩到任意目录, 然后在目录下的data目录里, 创建文件[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini)
+    - windows 版: 执行(双击)bustag.exe
+    - mac 版: 执行(双击)bustag
+    - 浏览器访问: localhost:8000, 访问成功说明运行正常, 如果访问不成功, 可以看bustag程序窗口有无报错
+
+  ### 本地源代码安装
+  懂 python 开发的可以 clone 本项目, 建立一个虚拟环境并按照 requirements.txt 的 python 包后, 在项目根目录下
   直接运行
 
 ```
 python bustag/app/index.py
 
 或者安装了gunicorn
-gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
+gunicorn bustag.app.index:app --bind='0.0.0.0:8000'
 ```
 
-- 使用 docker 运行(推荐)
+ ### 使用 docker 运行(推荐)
 
   1. 建立一个目录, 如 bustag, 然后在该目录下建一个子目录 data, data 目录用于保存配置文件以及下载数据的数据库
   2. 在 data 下需要建立一个文件, [config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 该文件用于设置爬取的初始地址, 以及每次下载的最大数量
@@ -46,10 +66,10 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
 
   ```
   linux, mac
-    docker run --rm -d -v $(pwd)/data:/app/data -p 8080:8080 gxtrobot/bustag-app
+    docker run --rm -d -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
     windows powershell
-    docker run --rm -d -v ${PWD}/data:/app/data -p 8080:8080 gxtrobot/bustag-app
+    docker run --rm -d -v ${PWD}/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
   ```
 
@@ -75,6 +95,10 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
 ```
 
 - config.ini, (系统配置文件, 必须, 系统启动时候需要此文件, [参考文件](./data/config.ini))
+  - root_path: 制定bus网站主页地址, 爬虫起始地址, 由于地址可能变化, 确保本机能够访问该地址, 如果需要代理才能访问, 必须开启全局代理, 系统本身无代理设置
+  - count: 每次下载总数, 建议不要太多, 500以下比较好
+  - interval: 每次下载间隔时间, 单位为秒, 建议不要低于1800秒
+
 - bus.db (数据库文件, 可选, 但是可以放一个[现成的库, 有 2000 条数据, 方便直接开始打标, 不需要等下载](./data/bus.db))
 - crontab.txt (定时下载配置文件, 可选, [参考例子](./docker/crontab.txt))
 - model 目录(系统训练生成的模型)
@@ -108,12 +132,12 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8080'
    模型目前主要使用了各种标签数据, 比如影片分类, 女优名等等, 目前没有使用到标题
 
 8. 如何改变服务器运行端口
-   服务器默认为 8080 端口, 如果需要改变, 可以修改启动 docker 容器命令, 比如 8000
+   服务器默认为 8000 端口, 如果需要改变, 可以修改启动 docker 容器命令, 比如 8000
 
 ```
-修改为8000端口, 注意:后面的8080不要变, 然后可以通过localhost:8000访问
+修改为8000端口, 注意:后面的8000不要变, 然后可以通过localhost:8000访问
 
-docker run --rm -d -v $(pwd)/data:/app/data -p 8000:8080 gxtrobot/bustag-app
+docker run --rm -d -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 ```
 
 9. 如何备份数据库
