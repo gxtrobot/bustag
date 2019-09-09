@@ -5,10 +5,11 @@ from bustag.spider.parser import parse_item
 
 @pytest.fixture
 def html():
-    url = 'https://www.cdnbus.bid/MADM-116'
-    with open('./tests/item.html') as f:
-        html = f.read()
-    return html
+    url = 'https://www.cdnbus.bid/SHKD-875'
+    # url = 'https://www.cdnbus.bid/CESD-797'
+    session = HTMLSession()
+    r = session.get(url)
+    return r.text
 
 
 def test_process_item(html):

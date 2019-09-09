@@ -11,7 +11,7 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && mv ./sources.list /etc
 RUN apt-get -o Acquire::Check-Valid-Until=false update \
     && apt-get install \
     --no-install-recommends --yes \
-    build-essential libpq-dev cron \
+    build-essential libpq-dev cron git \
     python3-dev --yes
 
 FROM base as build
@@ -28,16 +28,9 @@ COPY ./docker/sources.list .
 
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && mv ./sources.list /etc/apt/
 
-RUN apt-get update && apt-get -y install cron
+RUN apt-get update && apt-get -y install cron git
 
 WORKDIR /app
-
-COPY ./docker/crontab.txt /etc/cron.d/crontab.txt
-
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/crontab.txt
-
-RUN crontab /etc/cron.d/crontab.txt
 
 COPY --from=build /install /install
 
@@ -45,9 +38,9 @@ COPY requirements.txt .
 
 RUN pip install --no-index --find-links=/install -r requirements.txt
 
-COPY . /app
+RUN mkdir /app/docker
 
-RUN pip install -e .
+COPY docker/entry.sh /app/docker/
 
 RUN touch /var/log/bustag.log
 
@@ -55,7 +48,7 @@ RUN rm -rf /install &&  rm -rf /root/.cache/pip
 
 RUN chmod 755 /app/docker/*.sh
 
-EXPOSE 8080
+EXPOSE 8000
 
 LABEL maintainer="gxtrobot <gxtrobot@gmail.com>"
 

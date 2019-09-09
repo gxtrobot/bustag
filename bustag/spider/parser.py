@@ -40,12 +40,11 @@ def parse_item(text):
         tag_value = ''
         tag_link = ''
         links = tag.find('a')
-        if links and len(links) == 1:
-            spans = tag.find('span')
-            if spans:
-                tag_type = (spans[0].text)
-                tag_link = links[0].attrs['href']
-                tag_value = links[0].text
+        spans = tag.find('span.header')
+        if spans and len(links) == 1:
+            tag_type = (spans[0].text)
+            tag_link = links[0].attrs['href']
+            tag_value = links[0].text
             if tag_type != '' and tag_value != '':
                 tag_list.append(Tag(tag_type, tag_value, tag_link))
         else:
