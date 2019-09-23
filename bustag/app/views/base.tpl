@@ -8,7 +8,7 @@
 
     <!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-	
+
     <title>{{title or ''}}</title>
   </head>
   <body>
@@ -28,6 +28,9 @@
       </li>
       <li class="nav-item {{ 'active' if path=='/tagit' else ''}}">
         <a class="nav-link" href="/tagit">打标</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/local_fanhao">本地</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/other">其他</a>

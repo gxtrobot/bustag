@@ -26,6 +26,12 @@ def system_exit():
         router.stop()
 
 
+def get_url_by_fanhao(fanhao):
+    # return full url
+    url = router.get_full_url(fanhao)
+    return url
+
+
 def verify_page_path(path, no):
     print(f'verify page {path} , args {no}')
     no = int(no)

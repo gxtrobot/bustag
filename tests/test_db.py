@@ -25,3 +25,11 @@ def test_load_item():
     item = Item.getit(id)
     Item.loadit(item)
     print(item.tags)
+
+
+def test_get_item_tags():
+    fanhao = 'JUY-797'
+    item = Item.get_by_fanhao(fanhao)
+    print(item)
+    tags = Item.get_tags_dict(item)
+    print(tags)

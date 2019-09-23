@@ -7,7 +7,9 @@ from multiprocessing import freeze_support
 from bottle import route, run, template, static_file, request, response, redirect
 from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
 from bustag.util import logger, get_cwd
-from bustag.app.schedule import start_scheduler
+from bustag.app.schedule import start_scheduler, add_download_job
+from bustag.spider import bus_spider
+from bustag.app.local import add_local_fanhao
 
 dirname = os.path.dirname(os.path.realpath(__file__))
 if getattr(sys, 'frozen', False):
@@ -111,14 +113,26 @@ def do_training():
     return template('other', path=request.path, model_scores=model_scores, error_msg=error_msg)
 
 
+@route('/local_fanhao', method=['GET', 'POST'])
+def update_local_fanhao():
+    if request.POST.submit:
+        fanhao = request.POST.fanhao
+        missed_fanhao = add_local_fanhao(fanhao)
+        if len(missed_fanhao) > 0:
+            urls = [bus_spider.get_url_by_fanhao(
+                fanhao) for fanhao in missed_fanhao]
+            add_download_job(urls)
+    return template('local_fanhao', path=request.path)
+
+
 app = bottle.default_app()
 
 
 def start_app():
     t = threading.Thread(target=start_scheduler)
     t.start()
-    run(host='0.0.0.0', server='paste', port=8000, debug=True)
-    # run(host='0.0.0.0', port=8000, debug=True)
+    # run(host='0.0.0.0', server='paste', port=8000, debug=True)
+    run(host='0.0.0.0', port=8000, debug=True, reloader=True)
 
 
 if __name__ == "__main__":

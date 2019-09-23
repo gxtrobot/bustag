@@ -73,6 +73,11 @@ class Item(BaseModel):
         return item
 
     @staticmethod
+    def get_by_fanhao(fanhao):
+        item = Item.get_or_none(Item.fanhao == fanhao)
+        return item
+
+    @staticmethod
     def get_tags_dict(item):
         tags = item.tags_list
         tags_dict = defaultdict(list)
@@ -157,6 +162,31 @@ class ItemRate(BaseModel):
         return item_rates[0] if len(item_rates) > 0 else None
 
 
+class LocalItem(BaseModel):
+    '''
+    local item table
+    '''
+    fanhao = CharField(unique=True)
+    path = CharField(null=True)
+    size = IntegerField(null=True)
+    add_date = DateTimeField(default=datetime.datetime.now)
+    view_date = DateTimeField(null=True)
+    view_times = IntegerField(default=0)
+
+    @staticmethod
+    def saveit(fanhao, path):
+        try:
+            local_item = LocalItem.create(
+                fanhao=fanhao, path=path)
+            logger.debug(f'save LocalItem: {fanhao}')
+        except Exception as ex:
+            logger.exception(ex)
+        return local_item
+
+    def __repr__(self):
+        return f'<LocalItem {self.fanhao}({self.path})>'
+
+
 def save(meta_info, tags):
     item_title = meta_info['title']
     try:
@@ -223,7 +253,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
 
 def init():
     db.connect()
-    db.create_tables([Item, Tag, ItemTag, ItemRate])
+    db.create_tables([Item, Tag, ItemTag, ItemRate, LocalItem])
 
 
 init()
