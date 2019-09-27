@@ -1,4 +1,4 @@
-% rebase('base.tpl', title='推荐', path=path)
+% rebase('base.tpl', title='推荐', path=path, msg=msg)
 % curr_page = page_info[2]
 
 <div class="container">
@@ -16,14 +16,14 @@
 		</ul>
 	</div>
 </div>
-%#generate list of rows of items 
+%#generate list of rows of items
 %for item in items:
 <form action="/correct/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
 		<div class="col-12 col-md-4">
 		<img class="img-fluid img-thumbnail" src={{item.cover_img_url}}>
 		</div>
-			
+
 			<div class="col-7 col-md-5">
 			<div class="small text-muted">id: {{item.id}}</div>
 			<div class="small text-muted">发行日期: {{item.release_date}}</div>
@@ -40,7 +40,7 @@
 			<span class="badge badge-warning">{{t}}</span>
 			% end
 			</div>
-		
+
 			</div>
 		<div class="col-5 col-md-3  align-self-center">
 		<button type="submit" name="submit" class="btn btn-primary mx-2" value="1">正确</button>

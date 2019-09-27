@@ -2,9 +2,11 @@ from bustag.model.prepare import load_data, process_data, prepare_predict_data
 
 
 def test_load_data():
-    df = load_data()
-    assert len(df) > 0
-    print(df.iloc[0])
+    items = load_data()
+    print(len(items))
+    item = items[0]
+    print(item.fanhao, item.tags_dict)
+    assert len(items) > 0
 
 
 def test_process_data():

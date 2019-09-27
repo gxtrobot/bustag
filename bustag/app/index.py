@@ -5,8 +5,9 @@ import os
 import bottle
 from multiprocessing import freeze_support
 from bottle import route, run, template, static_file, request, response, redirect
-from bustag.spider.db import get_items, RATE_TYPE, RATE_VALUE, ItemRate, Item
-from bustag.util import logger, get_cwd
+from bustag.spider.db import get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate, Item, LocalItem
+from bustag.spider import db
+from bustag.util import logger, get_cwd, get_now_time
 from bustag.app.schedule import start_scheduler, add_download_job
 from bustag.spider import bus_spider
 from bustag.app.local import add_local_fanhao
@@ -30,9 +31,11 @@ def index():
     page = int(request.query.get('page', 1))
     items, page_info = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
-    for item in items:
-        Item.get_tags_dict(item)
-    return template('index', items=items, page_info=page_info, like=rate_value, path=request.path)
+
+    today_update_count = db.get_today_update_count()
+    today_recommend_count = db.get_today_recommend_count()
+    msg = f'今日更新 {today_update_count} , 今日推荐 {today_recommend_count}'
+    return template('index', items=items, page_info=page_info, like=rate_value, path=request.path, msg=msg)
 
 
 @route('/tagit')
@@ -46,8 +49,7 @@ def tagit():
     page = int(request.query.get('page', 1))
     items, page_info = get_items(
         rate_type=rate_type, rate_value=rate_value, page=page)
-    for item in items:
-        Item.get_tags_dict(item)
+
     return template('tagit', items=items, page_info=page_info, like=rate_value, path=request.path)
 
 
@@ -93,13 +95,13 @@ def correct(id):
     redirect(url)
 
 
-@route('/other')
+@route('/model')
 def other_settings():
     try:
         _, model_scores = clf.load()
     except FileNotFoundError:
         model_scores = None
-    return template('other', path=request.path, model_scores=model_scores)
+    return template('model', path=request.path, model_scores=model_scores)
 
 
 @route('/do-training')
@@ -115,14 +117,33 @@ def do_training():
 
 @route('/local_fanhao', method=['GET', 'POST'])
 def update_local_fanhao():
+    msg = ''
     if request.POST.submit:
-        fanhao = request.POST.fanhao
-        missed_fanhao = add_local_fanhao(fanhao)
+        fanhao_list = request.POST.fanhao
+        missed_fanhao, local_file_count = add_local_fanhao(fanhao_list)
         if len(missed_fanhao) > 0:
             urls = [bus_spider.get_url_by_fanhao(
                 fanhao) for fanhao in missed_fanhao]
             add_download_job(urls)
-    return template('local_fanhao', path=request.path)
+            msg = f'上传 {len(missed_fanhao)} 个番号, {local_file_count} 个本地文件'
+    return template('local_fanhao', path=request.path, msg=msg)
+
+
+@route('/local')
+def local():
+    page = int(request.query.get('page', 1))
+    items, page_info = get_local_items(page=page)
+    for item in items:
+        LocalItem.loadit(item)
+    return template('local', items=items, page_info=page_info, path=request.path)
+
+
+@route('/local_play/<id:int>')
+def local_play(id):
+    local_item = LocalItem.update_play(id)
+    file_path = local_item.path
+    print(file_path)
+    redirect(file_path)
 
 
 app = bottle.default_app()

@@ -9,7 +9,7 @@ import json
 from peewee import *
 from enum import IntEnum
 from collections import defaultdict
-from bustag.util import logger, get_data_path, format_datetime
+from bustag.util import logger, get_data_path, format_datetime, get_now_time, get_full_url
 
 DB_FILE = 'bus.db'
 db = SqliteDatabase(get_data_path(DB_FILE), pragmas={
@@ -52,15 +52,15 @@ class Item(BaseModel):
             item = Item.create(fanhao=item_fanhao, title=item_title, url=item_url,
                                release_date=item_release_date, meta_info=item_meta)
             logger.debug(f'save item:  {item}')
-        except IntegrityError as ex:
+        except IntegrityError:
+            logger.debug('Item exists: {item_fanhao}')
             raise ExistError()
         else:
             return item
 
     @staticmethod
     def loadit(item):
-        from bustag.spider.bus_spider import router
-        item.url = router.get_full_url(item.url)
+        item.url = get_full_url(item.url)
         meta = json.loads(item.meta_info)
         item.cover_img_url = meta['cover_img_url']
         series = item.fanhao.split('-')[0]
@@ -78,12 +78,9 @@ class Item(BaseModel):
 
     @staticmethod
     def get_tags_dict(item):
-        tags = Tag.select(Tag).join(ItemTag).join(
-            Item).where(ItemTag.item == item.fanhao)
         tags_dict = defaultdict(list)
-        for t in tags:
-            if t.type_ in ['genre', 'star']:
-                tags_dict[t.type_].append(t.value)
+        for t in item.tags_list:
+            tags_dict[t.tag.type_].append(t.tag.value)
         item.tags_dict = tags_dict
 
 
@@ -190,13 +187,28 @@ class LocalItem(BaseModel):
             local_item = LocalItem.create(
                 item=fanhao, path=path)
             logger.debug(f'save LocalItem: {fanhao}')
-        except Exception as ex:
-            logger.exception(ex)
+        except IntegrityError:
+            logger.debug(f'LocalItem exists: {fanhao}')
         else:
             return local_item
 
     def __repr__(self):
         return f'<LocalItem {self.fanhao}({self.path})>'
+
+    @staticmethod
+    def update_play(id):
+        nrows = (LocalItem
+                 .update({LocalItem.last_view_date: get_now_time(),
+                          LocalItem.view_times: LocalItem.view_times+1})
+                 .where(LocalItem.id == id)
+                 .execute())
+        logger.debug(f'update LocalItem {id} : rows:{nrows}')
+        return LocalItem.get_by_id(id)
+
+    @staticmethod
+    def loadit(local_item):
+        local_item.last_view_date = format_datetime(
+            local_item.last_view_date) if local_item.last_view_date else ''
 
 
 def save(meta_info, tags):
@@ -260,6 +272,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     total_items = q.count()
     if not page is None:
         q = q.paginate(page, page_size)
+    items = get_tags_for_items(q)
     for item in q:
         Item.loadit(item)
         if hasattr(item, 'item_rate'):
@@ -271,6 +284,68 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     total_pages = (total_items + page_size - 1) // page_size
     page_info = (total_items, total_pages, page, page_size)
     return items, page_info
+
+
+def get_local_items(page=1, page_size=10):
+    '''
+    get local items
+    '''
+    items = []
+    q = (LocalItem.select(LocalItem)
+         .where(LocalItem.path.is_null(False))
+         .order_by(LocalItem.id.desc())
+         )
+    total_items = q.count()
+    if not page is None:
+        q = q.paginate(page, page_size)
+
+    item_query = Item.select()
+    item_tag_query = ItemTag.select()
+    tag_query = Tag.select()
+    items_with_tags = prefetch(q, item_query, item_tag_query, tag_query)
+
+    for local_item in items_with_tags:
+        Item.loadit(local_item.item)
+        Item.get_tags_dict(local_item.item)
+        items.append(local_item)
+
+    total_pages = (total_items + page_size - 1) // page_size
+    page_info = (total_items, total_pages, page, page_size)
+    return items, page_info
+
+
+def get_today_update_count():
+    now = get_now_time()
+    year, month, day = now.year, now.month, now.day
+    q = Item.select().where((Item.add_date.year == year)
+                            & (Item.add_date.month == month)
+                            & (Item.add_date.day == day)
+                            )
+    return q.count()
+
+
+def get_today_recommend_count():
+    now = get_now_time()
+    year, month, day = now.year, now.month, now.day
+    q = ItemRate.select().where((ItemRate.rete_time.year == year)
+                                & (ItemRate.rete_time.month == month)
+                                & (ItemRate.rete_time.day == day)
+                                & (ItemRate.rate_type == RATE_TYPE.SYSTEM_RATE)
+                                & (ItemRate.rate_value == RATE_VALUE.LIKE)
+                                )
+    return q.count()
+
+
+def get_tags_for_items(items_query):
+    item_tag_query = ItemTag.select()
+    tag_query = Tag.select()
+    items_with_tags = prefetch(items_query, item_tag_query, tag_query)
+    items = []
+    for item in items_with_tags:
+        Item.get_tags_dict(item)
+        items.append(item)
+
+    return items
 
 
 def init():

@@ -39,7 +39,7 @@ def start_scheduler():
     interval = int(APP_CONFIG.get('download.interval', 1800))
     loop = asyncio.new_event_loop()
     scheduler = AsyncIOScheduler(event_loop=loop)
-    t1 = datetime.now() + timedelta(seconds=10)
+    t1 = datetime.now() + timedelta(seconds=1)
     int_trigger = IntervalTrigger(seconds=interval)
     date_trigger = DateTrigger(run_date=t1)
     urls = (APP_CONFIG['download.root_path'],)

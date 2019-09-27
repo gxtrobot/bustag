@@ -7,7 +7,7 @@ import signal
 from aspider.routeing import get_router
 from .parser import parse_item
 from .db import save
-from bustag.util import APP_CONFIG
+from bustag.util import APP_CONFIG, get_full_url
 router = get_router()
 counter = 0
 SYSTEM_EXIT = False
@@ -28,14 +28,14 @@ def system_exit():
 
 def get_url_by_fanhao(fanhao):
     # return full url
-    url = router.get_full_url(fanhao)
+    url = get_full_url(fanhao)
     return url
 
 
 def verify_page_path(path, no):
     print(f'verify page {path} , args {no}')
     no = int(no)
-    if no <= 10:
+    if no <= 20:
         return True
     else:
         return False
@@ -64,7 +64,7 @@ def process_item(text, path, fanhao):
     global counter
     counter += 1
     print(f'process item {fanhao}')
-    url = router.get_full_url(path)
+    url = path
     meta, tags = parse_item(text)
     meta.update(url=url)
 #     print('meta keys', len(meta.keys()))
@@ -76,4 +76,5 @@ def process_item(text, path, fanhao):
 if __name__ == "__main__":
     from aspider import aspider
     import sys
-    aspider.main()
+    aspider.main(no_parse_links=True)
+    # aspider.main()

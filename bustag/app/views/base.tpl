@@ -29,15 +29,33 @@
       <li class="nav-item {{ 'active' if path=='/tagit' else ''}}">
         <a class="nav-link" href="/tagit">打标</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/local_fanhao">本地</a>
+      <li class="nav-item {{ 'active' if path=='/local' else ''}}">
+        <a class="nav-link" href="/local">本地</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/other">其他</a>
+      <li class="nav-item {{ 'active' if path=='/model' else ''}}">
+        <a class="nav-link" href="/model">模型</a>
       </li>
     </ul>
   </div>
 </nav>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row py-3">
+    <div class="col-12">
+  % if defined('msg') and msg != '':
+    <div class="alert alert-success" role="alert">
+    {{msg}}
+    </div>
+  % end
+
+  % if defined('errmsg') and errmsg != '':
+    <div class="alert alert-danger" role="alert">
+    {{errmsg}}
+    </div>
+  % end
     </div>
   </div>
 </div>

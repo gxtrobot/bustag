@@ -3,6 +3,8 @@ import os
 import sys
 import configparser
 import pytz
+import datetime
+from urllib.parse import urljoin
 
 logger = logging.getLogger('bustag')
 
@@ -22,12 +24,25 @@ def get_cwd():
 def setup_logging():
     logger.addHandler(logging.StreamHandler())
     logger.setLevel(logging.DEBUG)
+    # pw_logger = logging.getLogger('peewee')
+    # pw_logger.addHandler(logging.StreamHandler())
+    # pw_logger.setLevel(logging.DEBUG)
 
 
 def get_data_path(file):
     cwd = get_cwd()
     file_path = os.path.join(cwd, DATA_PATH, file)
     return file_path
+
+
+def get_now_time():
+    return datetime.datetime.now()
+
+
+def get_full_url(path):
+    root_path = APP_CONFIG['download.root_path']
+    full_url = urljoin(root_path, path)
+    return full_url
 
 
 def load_config():

@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
-from bustag.spider.db import get_items, RATE_TYPE, ItemRate, Item
+from bustag.spider.db import get_items, RATE_TYPE, ItemRate, Item, get_tags_for_items
 from bustag.model.persist import dump_model, load_model
 from bustag.util import logger, get_data_path, MODEL_PATH
 
