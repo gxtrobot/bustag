@@ -4,6 +4,9 @@ html parser to extract data
 import re
 from collections import namedtuple
 from requests_html import HTML
+from aspider.routeing import get_router
+router = get_router()
+
 
 Tag = namedtuple('Tag', ['type', 'value', 'link'])
 
@@ -46,7 +49,7 @@ def parse_item(text):
             tag_link = links[0].attrs['href']
             tag_value = links[0].text
             if tag_type != '' and tag_value != '':
-                tag_list.append(Tag(tag_type, tag_value, tag_link))
+                tag_list.append(create_tag(tag_type, tag_value, tag_link))
         else:
             for link in links:
                 tag_link = link.attrs['href']
@@ -56,6 +59,12 @@ def parse_item(text):
                 if 'star' in tag_link:
                     tag_type = 'star'
                 if tag_type != '' and tag_value != '':
-                    tag_list.append(Tag(tag_type, tag_value, tag_link))
+                    tag_list.append(create_tag(tag_type, tag_value, tag_link))
 
     return meta, tag_list
+
+
+def create_tag(tag_type, tag_value, tag_link):
+    tag_link = router.get_url_path(tag_link)
+    tag = Tag(tag_type, tag_value, tag_link)
+    return tag

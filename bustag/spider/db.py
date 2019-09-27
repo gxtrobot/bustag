@@ -12,10 +12,12 @@ from collections import defaultdict
 from bustag.util import logger, get_data_path, format_datetime
 
 DB_FILE = 'bus.db'
-db = SqliteDatabase(get_data_path(DB_FILE))
+db = SqliteDatabase(get_data_path(DB_FILE), pragmas={
+    'journal_mode': 'wal'})
 
 
 class BaseModel(Model):
+
     class Meta:
         database = db
         legacy_table_names = False
@@ -30,14 +32,14 @@ class Item(BaseModel):
     item table
     '''
     title = CharField()
-    fanhao = CharField()
+    fanhao = CharField(unique=True)
     url = CharField(unique=True)
     release_date = DateField()
     add_date = DateTimeField(default=datetime.datetime.now)
     meta_info = TextField()
 
     def __repr__(self):
-        return f'<Item:{self.id} {self.title}>'
+        return f'<Item:{self.fanhao} {self.title}>'
 
     @staticmethod
     def saveit(meta_info):
@@ -52,19 +54,16 @@ class Item(BaseModel):
             logger.debug(f'save item:  {item}')
         except IntegrityError as ex:
             raise ExistError()
-        return item
+        else:
+            return item
 
     @staticmethod
     def loadit(item):
+        from bustag.spider.bus_spider import router
+        item.url = router.get_full_url(item.url)
         meta = json.loads(item.meta_info)
         item.cover_img_url = meta['cover_img_url']
-        tags = []
         series = item.fanhao.split('-')[0]
-        for t in item.tags_list:
-            tags.append(t.tag.value)
-        tags.append(series)
-        tags = set(tags)
-        item.tags = tags
         item.add_date = format_datetime(item.add_date)
 
     @staticmethod
@@ -79,11 +78,12 @@ class Item(BaseModel):
 
     @staticmethod
     def get_tags_dict(item):
-        tags = item.tags_list
+        tags = Tag.select(Tag).join(ItemTag).join(
+            Item).where(ItemTag.item == item.fanhao)
         tags_dict = defaultdict(list)
-        for t in item.tags_list:
-            if t.tag.type_ in ['genre', 'star']:
-                tags_dict[t.tag.type_].append(t.tag.value)
+        for t in tags:
+            if t.type_ in ['genre', 'star']:
+                tags_dict[t.type_].append(t.value)
         item.tags_dict = tags_dict
 
 
@@ -92,27 +92,36 @@ class Tag(BaseModel):
     tag table
     '''
     type_ = CharField(column_name='type')
-    value = CharField(unique=True)
+    value = CharField()
     url = CharField()
+
+    class Meta:
+        indexes = (
+            # Specify a unique multi-column index
+            (('type_', 'value'), True),
+        )
 
     def __repr__(self):
         return f'<Tag {self.value}>'
 
     @staticmethod
     def saveit(tag_info):
-        try:
-            tag = Tag.create(type_=tag_info.type, value=tag_info.value,
-                             url=tag_info.link)
+        tag, created = Tag.get_or_create(type_=tag_info.type, value=tag_info.value,
+                                         defaults={'url': tag_info.link})
+        if created:
             logger.debug(f'save tag:  {tag}')
-        except IntegrityError as ex:
-            tag = Tag.get(Tag.value == tag_info.value)
-
         return tag
 
 
 class ItemTag(BaseModel):
-    item = ForeignKeyField(Item, backref='tags_list')
+    item = ForeignKeyField(Item, field='fanhao', backref='tags_list')
     tag = ForeignKeyField(Tag, backref='items')
+
+    class Meta:
+        indexes = (
+            # Specify a unique multi-column index
+            (('item', 'tag'), True),
+        )
 
     @staticmethod
     def saveit(item, tag):
@@ -121,11 +130,11 @@ class ItemTag(BaseModel):
             logger.debug(f'save tag_item: {item_tag}')
         except Exception as ex:
             logger.exception(ex)
-
-        return item_tag
+        else:
+            return item_tag
 
     def __repr__(self):
-        return f'<ItemTag {self.item.title} - {self.tag.value}>'
+        return f'<ItemTag {self.item.fanhao} - {self.tag.value}>'
 
 
 class RATE_TYPE(IntEnum):
@@ -142,7 +151,8 @@ class RATE_VALUE(IntEnum):
 class ItemRate(BaseModel):
     rate_type = IntegerField()
     rate_value = IntegerField()
-    item = ForeignKeyField(Item, backref='rated_items', unique=True)
+    item = ForeignKeyField(Item, field='fanhao',
+                           backref='rated_items', unique=True)
     rete_time = DateTimeField(default=datetime.datetime.now)
 
     @staticmethod
@@ -153,8 +163,8 @@ class ItemRate(BaseModel):
             logger.debug(f'save ItemRate: {item_rate}')
         except Exception as ex:
             logger.exception(ex)
-
-        return item_rate
+        else:
+            return item_rate
 
     @staticmethod
     def get_by_itemid(item_id):
@@ -166,22 +176,24 @@ class LocalItem(BaseModel):
     '''
     local item table
     '''
-    fanhao = CharField(unique=True)
+    item = ForeignKeyField(Item, field='fanhao',
+                           backref='local_item', unique=True)
     path = CharField(null=True)
     size = IntegerField(null=True)
     add_date = DateTimeField(default=datetime.datetime.now)
-    view_date = DateTimeField(null=True)
+    last_view_date = DateTimeField(null=True)
     view_times = IntegerField(default=0)
 
     @staticmethod
     def saveit(fanhao, path):
         try:
             local_item = LocalItem.create(
-                fanhao=fanhao, path=path)
+                item=fanhao, path=path)
             logger.debug(f'save LocalItem: {fanhao}')
         except Exception as ex:
             logger.exception(ex)
-        return local_item
+        else:
+            return local_item
 
     def __repr__(self):
         return f'<LocalItem {self.fanhao}({self.path})>'
@@ -189,22 +201,29 @@ class LocalItem(BaseModel):
 
 def save(meta_info, tags):
     item_title = meta_info['title']
+    tag_objs = []
     try:
         item = Item.saveit(meta_info)
     except ExistError:
         logger.debug(f'item exists: {item_title}')
     else:
-        for tag_info in tags:
-            tag = Tag.saveit(tag_info)
-            ItemTag.saveit(item, tag)
+        with db.atomic():
+            for tag_info in tags:
+                tag = Tag.saveit(tag_info)
+                if tag:
+                    tag_objs.append(tag)
+        with db.atomic():
+            for tag_obj in tag_objs:
+                ItemTag.saveit(item, tag_obj)
 
 
 def test_save():
     item_url = 'https://www.cdnbus.bid/MADM-116'
     item_title = 'test item'
+    item_fanhao = 'MADM-116'
     item_release_date = date(2019, 7, 19)
     item_meta_info = ''
-    item = Item(title=item_title, url=item_url,
+    item = Item(title=item_title, url=item_url, fanhao=item_fanhao,
                 release_date=item_release_date, meta_info=item_meta_info)
     item.save()
 
@@ -216,6 +235,9 @@ def test_save():
                       url='https://www.cdnbus.bid/genre/x1')
     ItemTag.create(item=item, tag=tag1)
     ItemTag.create(item=item, tag=tag2)
+
+    ItemRate.saveit(RATE_TYPE.USER_RATE, RATE_VALUE.LIKE, item)
+    LocalItem.saveit('MADM-116', '/Download/MADM-116.avi')
 
 
 def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
@@ -252,7 +274,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
 
 
 def init():
-    db.connect()
+    db.connect(reuse_if_open=True)
     db.create_tables([Item, Tag, ItemTag, ItemRate, LocalItem])
 
 
