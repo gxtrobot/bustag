@@ -258,7 +258,7 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     '''
     get required items based on some conditions
     '''
-    items = []
+    items_list = []
     clauses = []
     if rate_type is not None:
         clauses.append(ItemRate.rate_type == rate_type)
@@ -275,17 +275,17 @@ def get_items(rate_type=None, rate_value=None, page=1, page_size=10):
     if not page is None:
         q = q.paginate(page, page_size)
     items = get_tags_for_items(q)
-    for item in q:
+    for item in items:
         Item.loadit(item)
         if hasattr(item, 'item_rate'):
             item.rate_value = item.item_rate.rate_value
         else:
             item.rate_value = None
-        items.append(item)
+        items_list.append(item)
 
     total_pages = (total_items + page_size - 1) // page_size
     page_info = (total_items, total_pages, page, page_size)
-    return items, page_info
+    return items_list, page_info
 
 
 def get_local_items(page=1, page_size=10):

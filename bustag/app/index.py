@@ -4,10 +4,10 @@ import sys
 import os
 import bottle
 from multiprocessing import freeze_support
+from bustag.util import logger, get_cwd, get_now_time
 from bottle import route, run, template, static_file, request, response, redirect
 from bustag.spider.db import get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate, Item, LocalItem
 from bustag.spider import db
-from bustag.util import logger, get_cwd, get_now_time
 from bustag.app.schedule import start_scheduler, add_download_job
 from bustag.spider import bus_spider
 from bustag.app.local import add_local_fanhao
@@ -56,6 +56,7 @@ def tagit():
 @route('/tag/<id:int>', method='POST')
 def tag(id):
     if request.POST.submit:
+        formid = request.POST.formid
         item_rate = ItemRate.get_by_itemid(id)
         rate_value = request.POST.submit
         if not item_rate:
@@ -70,6 +71,8 @@ def tag(id):
     page = int(request.query.get('page', 1))
     like = request.query.get('like')
     url = f'/tagit?page={page}&like={like}'
+    if formid:
+        url += f'#{formid}'
     print(url)
     redirect(url)
 
@@ -111,8 +114,9 @@ def do_training():
     try:
         _, model_scores = clf.train()
     except ValueError as ex:
+        logger.exception(ex)
         error_msg = ' '.join(ex.args)
-    return template('other', path=request.path, model_scores=model_scores, error_msg=error_msg)
+    return template('model', path=request.path, model_scores=model_scores, error_msg=error_msg)
 
 
 @route('/local_fanhao', method=['GET', 'POST'])

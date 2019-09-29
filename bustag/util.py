@@ -7,7 +7,7 @@ import datetime
 from urllib.parse import urljoin
 
 logger = logging.getLogger('bustag')
-
+TESTING = False
 DATA_PATH = 'data/'
 CONFIG_FILE = 'config.ini'
 MODEL_PATH = 'model/'
@@ -21,12 +21,24 @@ def get_cwd():
         return os.getcwd()
 
 
+def check_testing():
+    global TESTING
+    if os.environ.get('TESTING'):
+        TESTING = True
+        print('*** in test mode ***')
+
+
 def setup_logging():
-    logger.addHandler(logging.StreamHandler())
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)-20s - %(levelname)-8s \n- %(message)s')
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
     logger.setLevel(logging.DEBUG)
-    # pw_logger = logging.getLogger('peewee')
-    # pw_logger.addHandler(logging.StreamHandler())
-    # pw_logger.setLevel(logging.DEBUG)
+    if TESTING:
+        pw_logger = logging.getLogger('peewee')
+        pw_logger.addHandler(logging.StreamHandler())
+        pw_logger.setLevel(logging.DEBUG)
 
 
 def get_data_path(file):
@@ -45,7 +57,18 @@ def get_full_url(path):
     return full_url
 
 
+def check_config():
+    config_path = get_data_path(CONFIG_FILE)
+    abs_path = os.path.abspath(config_path)
+    if not os.path.exists(abs_path):
+        logger.error(
+            f'file {abs_path} not exists,  please make sure file exists and configed, system quit now!')
+        logger.error(f'文件 {abs_path} 不存在, 请检查文件存在并已配置, 系统退出!')
+        sys.exit(1)
+
+
 def load_config():
+    check_config()
     config_path = get_data_path(CONFIG_FILE)
     conf = configparser.ConfigParser()
     conf.read(config_path)
@@ -78,6 +101,7 @@ def check_model_folder():
 
 def init():
     print(f'CWD: {get_cwd()}')
+    check_testing()
     setup_logging()
     load_config()
     check_model_folder()

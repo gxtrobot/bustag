@@ -28,13 +28,17 @@ def load_data():
 
 
 def as_dict(item):
+    tags_set = set()
+    for tags in item.tags_dict.values():
+        for tag in tags:
+            tags_set.add(tag)
     d = {
-        'id': item.id,
+        'id': item.fanhao,
         'title': item.title,
         'fanhao': item.fanhao,
         'url': item.url,
         'add_date': item.add_date,
-        'tags': item.tags,
+        'tags': tags_set,
         'cover_img_url': item.cover_img_url,
         'target': item.rate_value
     }

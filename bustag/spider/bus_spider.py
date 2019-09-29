@@ -6,8 +6,8 @@ import os
 import signal
 from aspider.routeing import get_router
 from .parser import parse_item
-from .db import save
-from bustag.util import APP_CONFIG, get_full_url
+from .db import save, Item
+from bustag.util import APP_CONFIG, get_full_url, logger
 router = get_router()
 counter = 0
 SYSTEM_EXIT = False
@@ -33,7 +33,7 @@ def get_url_by_fanhao(fanhao):
 
 
 def verify_page_path(path, no):
-    print(f'verify page {path} , args {no}')
+    logger.debug(f'verify page {path} , args {no}')
     no = int(no)
     if no <= 20:
         return True
@@ -52,18 +52,27 @@ def process_page(text, path, no):
     '''
     process list page
     '''
-    print(f'page {no} has length {len(text)}')
+    logger.debug(f'page {no} has length {len(text)}')
     print(f'process page {no}')
 
 
-@router.route('/<fanhao:[\w]+-[\d]+>')
+def verify_fanhao(path, fanhao):
+    '''
+    verify fanhao before add it to queue
+    '''
+    global counter
+    counter += 1
+    exists = Item.get_by_fanhao(fanhao)
+    logger.debug(f'verify {fanhao}: , exists:{exists is None}, skip {path}')
+    return exists is None
+
+
+@router.route('/<fanhao:[\w]+-[\d]+>', verify_fanhao)
 def process_item(text, path, fanhao):
     '''
     process item page
     '''
-    global counter
-    counter += 1
-    print(f'process item {fanhao}')
+    logger.debug(f'process item {fanhao}')
     url = path
     meta, tags = parse_item(text)
     meta.update(url=url)

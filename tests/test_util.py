@@ -17,3 +17,9 @@ def test_to_localtime():
     t = datetime.utcnow()
     local = util.to_localtime(t)
     print(local)
+
+
+def test_testing_mode():
+    import os
+    print(f'env: {os.getenv("TESTING")}')
+    assert util.TESTING == True

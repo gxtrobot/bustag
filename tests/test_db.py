@@ -15,6 +15,18 @@ def test_get_items():
         f'total_items: {page_info[0]}, total_page: {page_info[1]}, current_page: {page_info[2]}, page_size:{page_info[3]}')
 
 
+def test_get_items2():
+    rate_type = None
+    rate_value = None
+    page = None
+    items, page_info = get_items(
+        rate_type=rate_type, rate_value=rate_value, page=page)
+    assert len(items) > 0
+    print(f'item count:{len(items)}')
+    print(
+        f'total_items: {page_info[0]}, total_page: {page_info[1]}, current_page: {page_info[2]}, page_size:{page_info[3]}')
+
+
 def test_getit():
     id = 100
     item = Item.getit(id)

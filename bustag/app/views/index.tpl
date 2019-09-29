@@ -21,7 +21,7 @@
 <form action="/correct/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
 		<div class="col-12 col-md-4">
-		<img class="img-fluid img-thumbnail" src={{item.cover_img_url}}>
+		<img class="img-fluid img-thumbnail coverimg" src={{item.cover_img_url}}>
 		</div>
 
 			<div class="col-7 col-md-5">
