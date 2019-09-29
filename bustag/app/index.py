@@ -61,7 +61,7 @@ def tag(id):
         if not item_rate:
             rate_type = RATE_TYPE.USER_RATE
             item = Item.getit(id)
-            ItemRate.saveit(rate_type, rate_value, item)
+            ItemRate.saveit(rate_type, rate_value, item.fanhao)
             logger.debug(f'add new item_rate for id:{id}')
         else:
             item_rate.rate_value = rate_value
@@ -120,12 +120,16 @@ def update_local_fanhao():
     msg = ''
     if request.POST.submit:
         fanhao_list = request.POST.fanhao
-        missed_fanhao, local_file_count = add_local_fanhao(fanhao_list)
+        tag_like = request.POST.tag_like == '1'
+        missed_fanhao, local_file_count, tag_file_count = add_local_fanhao(
+            fanhao_list, tag_like)
         if len(missed_fanhao) > 0:
             urls = [bus_spider.get_url_by_fanhao(
                 fanhao) for fanhao in missed_fanhao]
             add_download_job(urls)
             msg = f'上传 {len(missed_fanhao)} 个番号, {local_file_count} 个本地文件'
+            if tag_like:
+                msg += f', {tag_file_count} 个打标为喜欢'
     return template('local_fanhao', path=request.path, msg=msg)
 
 

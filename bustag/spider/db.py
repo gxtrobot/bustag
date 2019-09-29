@@ -153,13 +153,14 @@ class ItemRate(BaseModel):
     rete_time = DateTimeField(default=datetime.datetime.now)
 
     @staticmethod
-    def saveit(rate_type, rate_value, item):
+    def saveit(rate_type, rate_value, fanhao):
+        item_rate = None
         try:
             item_rate = ItemRate.create(
-                item=item, rate_type=rate_type, rate_value=rate_value)
+                item=fanhao, rate_type=rate_type, rate_value=rate_value)
             logger.debug(f'save ItemRate: {item_rate}')
-        except Exception as ex:
-            logger.exception(ex)
+        except IntegrityError:
+            logger.debug(f'ItemRate exists: {fanhao}')
         else:
             return item_rate
 
@@ -183,6 +184,7 @@ class LocalItem(BaseModel):
 
     @staticmethod
     def saveit(fanhao, path):
+        local_item = None
         try:
             local_item = LocalItem.create(
                 item=fanhao, path=path)
@@ -248,7 +250,7 @@ def test_save():
     ItemTag.create(item=item, tag=tag1)
     ItemTag.create(item=item, tag=tag2)
 
-    ItemRate.saveit(RATE_TYPE.USER_RATE, RATE_VALUE.LIKE, item)
+    ItemRate.saveit(RATE_TYPE.USER_RATE, RATE_VALUE.LIKE, item.fanhao)
     LocalItem.saveit('MADM-116', '/Download/MADM-116.avi')
 
 
@@ -305,9 +307,12 @@ def get_local_items(page=1, page_size=10):
     items_with_tags = prefetch(q, item_query, item_tag_query, tag_query)
 
     for local_item in items_with_tags:
-        Item.loadit(local_item.item)
-        Item.get_tags_dict(local_item.item)
-        items.append(local_item)
+        try:
+            Item.loadit(local_item.item)
+            Item.get_tags_dict(local_item.item)
+            items.append(local_item)
+        except Exception:
+            pass
 
     total_pages = (total_items + page_size - 1) // page_size
     page_info = (total_items, total_pages, page, page_size)
