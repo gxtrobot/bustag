@@ -1,8 +1,10 @@
 '''
 handle local file related functions
 '''
+from peewee import SqliteDatabase
+
 from bustag.spider.db import Item, LocalItem, ItemRate, RATE_TYPE, RATE_VALUE, db
-from bustag.util import logger
+from bustag.util import logger, get_data_path
 
 
 def add_local_fanhao(fanhao, tag_like):
@@ -45,3 +47,50 @@ def add_local_fanhao(fanhao, tag_like):
     logger.debug(f'tag_file_added:{tag_file_added}')
     logger.debug(f'local_file_added:{local_file_added}')
     return missed_fanhaos, local_file_added, tag_file_added
+
+
+def load_tags_db():
+    '''
+    load user tags data from uploaded db file
+
+    Args:
+        file: io.BufferedRandom -> uploaded db file stream
+    '''
+    db_name = get_data_path('uploaded.db')
+    db_upload = SqliteDatabase(db_name)
+    db_is_old = False
+    tag_data = []
+    missed_fanhaos = []
+    tag_file_added = 0
+    sql_old = '''select item_rate.rate_value, item.fanhao
+                from item_rate inner
+                join item on item_rate.item_id = item.id
+                where item_rate.rate_type=1 '''
+
+    sql_new = '''select item_rate.rate_value, item.fanhao
+                from item_rate inner
+                join item on item_rate.item_id = item.fanhao
+                where item_rate.rate_type=1 '''
+    cursor = db_upload.execute_sql(sql_old)
+    res = cursor.fetchone()
+    if res:
+        db_is_old = True
+    if db_is_old:
+        cursor = db_upload.execute_sql(sql_old)
+    else:
+        cursor = db_upload.execute_sql(sql_new)
+
+    for row in cursor.fetchall():
+        tag_data.append(row)
+    for rate_value, fanhao in tag_data:
+        item_rate = ItemRate.saveit(
+            RATE_TYPE.USER_RATE, rate_value, fanhao)
+        if item_rate:
+            tag_file_added += 1
+        if not Item.get_by_fanhao(fanhao):
+            # add to get from spider
+            missed_fanhaos.append(fanhao)
+    logger.debug(tag_data)
+    logger.info(f'added user tag rate: {tag_file_added}')
+    logger.info(f'added fanhao to download: {len(missed_fanhaos)}')
+    return tag_file_added, missed_fanhaos

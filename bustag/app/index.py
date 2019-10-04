@@ -4,13 +4,13 @@ import sys
 import os
 import bottle
 from multiprocessing import freeze_support
-from bustag.util import logger, get_cwd, get_now_time
+from bustag.util import logger, get_cwd, get_now_time, get_data_path
 from bottle import route, run, template, static_file, request, response, redirect
 from bustag.spider.db import get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate, Item, LocalItem
 from bustag.spider import db
 from bustag.app.schedule import start_scheduler, add_download_job
 from bustag.spider import bus_spider
-from bustag.app.local import add_local_fanhao
+from bustag.app.local import add_local_fanhao, load_tags_db
 
 dirname = os.path.dirname(os.path.realpath(__file__))
 if getattr(sys, 'frozen', False):
@@ -153,6 +153,24 @@ def local_play(id):
     file_path = local_item.path
     logger.debug(file_path)
     redirect(file_path)
+
+
+@route('/load_db', method=['GET', 'POST'])
+def load_db():
+    msg = ''
+    if request.POST.submit:
+        upload = request.files.get('dbfile')
+        logger.debug(upload.filename)
+        name = get_data_path('uploaded.db')
+        upload.save(name, overwrite=True)
+        logger.debug(f'uploaded file saved to {name}')
+        tag_file_added, missed_fanhaos = load_tags_db()
+        urls = [bus_spider.get_url_by_fanhao(
+                fanhao) for fanhao in missed_fanhaos]
+        add_download_job(urls)
+        msg = f'上传 {tag_file_added} 条用户打标数据, {len(missed_fanhaos)} 个番号, '
+
+    return template('load_db', path=request.path, msg=msg)
 
 
 app = bottle.default_app()

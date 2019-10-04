@@ -67,7 +67,7 @@ def verify_fanhao(path, fanhao):
     return exists is None
 
 
-@router.route('/<fanhao:[\w]+-[\d]+>', verify_fanhao)
+@router.route('/<fanhao:[\w]+-[\d]+>', verify_fanhao, no_parse_links=True)
 def process_item(text, path, fanhao):
     '''
     process item page

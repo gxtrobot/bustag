@@ -34,8 +34,9 @@ def setup_logging():
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)
     logger.addHandler(ch)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.WARNING)
     if TESTING:
+        logger.setLevel(logging.DEBUG)
         pw_logger = logging.getLogger('peewee')
         pw_logger.addHandler(logging.StreamHandler())
         pw_logger.setLevel(logging.DEBUG)

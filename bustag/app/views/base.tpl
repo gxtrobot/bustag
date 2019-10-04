@@ -37,6 +37,9 @@
       <li class="nav-item {{ 'active' if path=='/model' else ''}}">
         <a class="nav-link" href="/model">模型</a>
       </li>
+      <li class="nav-item {{ 'active' if path=='/load_db' else ''}}">
+        <a class="nav-link" href="/load_db">数据</a>
+      </li>
     </ul>
   </div>
 </nav>

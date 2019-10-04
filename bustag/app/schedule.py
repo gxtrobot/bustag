@@ -20,11 +20,11 @@ def download(loop, no_parse_links=False, urls=None):
         urls:tuple - tuple of urls
     """
     print('start download')
-    sys.argv = sys.argv[:1]
     if urls:
         sys.argv.extend(urls)
     bus_spider.reset_download()
-    aspider.main(loop, no_parse_links)
+    extra_options = {'no_parse_links': no_parse_links, 'roots': urls}
+    aspider.download(loop, extra_options)
     try:
         import bustag.model.classifier as clf
 
