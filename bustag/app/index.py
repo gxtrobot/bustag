@@ -15,7 +15,7 @@ from bustag.app.local import add_local_fanhao
 dirname = os.path.dirname(os.path.realpath(__file__))
 if getattr(sys, 'frozen', False):
     dirname = sys._MEIPASS
-print('dirname:' + dirname)
+logger.debug('dirname:' + dirname)
 bottle.TEMPLATE_PATH.insert(0, dirname + '/views/')
 
 
@@ -73,15 +73,15 @@ def tag(id):
     url = f'/tagit?page={page}&like={like}'
     if formid:
         url += f'#{formid}'
-    print(url)
     redirect(url)
 
 
 @route('/correct/<id:int>', method='POST')
 def correct(id):
     if request.POST.submit:
+        formid = request.POST.formid
         is_correct = int(request.POST.submit)
-        item_rate = ItemRate.get_by_itemid(id)
+        item_rate = ItemRate.getit(id)
         if item_rate:
             item_rate.rate_type = RATE_TYPE.USER_RATE
             if not is_correct:
@@ -94,7 +94,8 @@ def correct(id):
     page = int(request.query.get('page', 1))
     like = int(request.query.get('like', 1))
     url = f'/?page={page}&like={like}'
-    print(url)
+    if formid:
+        url += f'#{formid}'
     redirect(url)
 
 
@@ -150,7 +151,7 @@ def local():
 def local_play(id):
     local_item = LocalItem.update_play(id)
     file_path = local_item.path
-    print(file_path)
+    logger.debug(file_path)
     redirect(file_path)
 
 
@@ -161,7 +162,7 @@ def start_app():
     t = threading.Thread(target=start_scheduler)
     t.start()
     # run(host='0.0.0.0', server='paste', port=8000, debug=True)
-    run(host='0.0.0.0', port=8000, debug=True, reloader=True)
+    run(host='0.0.0.0', port=8000, debug=True, reloader=False)
 
 
 if __name__ == "__main__":

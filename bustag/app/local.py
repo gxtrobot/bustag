@@ -21,7 +21,7 @@ def add_local_fanhao(fanhao, tag_like):
         else:
             fanhao = row
             path = None
-        fanhao = fanhao.strip()
+        fanhao = fanhao.strip().upper()
         path = path.strip() if path else None
         items.append((fanhao, path))
     with db.atomic():

@@ -5,10 +5,10 @@
 	<div class="col-12">
 		<ul class="nav nav-tabs">
         <li class="nav-item">
-			<a class="nav-link" href="/local">本地文件</a>
+			<a class="nav-link {{'active' if path=='/local' else ''}}" href="/local">本地文件</a>
 		</li>
         <li class="nav-item">
-			<a class="nav-link" href="/local_fanhao">上传番号</a>
+			<a class="nav-link {{'active' if path=='/local_fanhao' else ''}}" href="/local_fanhao">上传番号</a>
 		</li>
 		<li class="nav-item">
 		</li>

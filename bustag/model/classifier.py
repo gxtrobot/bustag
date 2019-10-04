@@ -9,7 +9,7 @@ from bustag.spider.db import RATE_TYPE, ItemRate
 from bustag.util import logger, get_data_path, MODEL_PATH
 
 MODEL_FILE = MODEL_PATH + 'model.pkl'
-MIN_TRAIN_NUM = 100
+MIN_TRAIN_NUM = 200
 
 
 def load():
@@ -31,8 +31,9 @@ def predict(X_test):
 def train():
     model = create_model()
     X_train, X_test, y_train, y_test = prepare_data()
-    if len(X_train) < MIN_TRAIN_NUM:
-        raise ValueError('训练数据不足, 无法训练模型')
+    total = len(X_test) + len(X_train)
+    if total < MIN_TRAIN_NUM:
+        raise ValueError(f'训练数据不足, 无法训练模型. 需要{MIN_TRAIN_NUM}, 当前{total}')
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     confusion_mtx = confusion_matrix(y_test, y_pred)

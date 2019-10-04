@@ -9,6 +9,8 @@
     <!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 
+	<link rel="stylesheet" type="text/css" href="/static/css/bustag.css">
+
     <title>{{title or ''}}</title>
   </head>
   <body>

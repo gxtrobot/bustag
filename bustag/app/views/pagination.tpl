@@ -1,6 +1,7 @@
 % curr_page = page_info[2]
 % max_page = page_info[1]
 % total_items = page_info[0]
+% setdefault('like', '')
 <div class="row">
 	<div class="col-12 text-center">
 	<h6>
@@ -18,6 +19,18 @@
 	% if curr_page != max_page:
 	<a href="?page={{max_page}}&like={{like}}">最后页</a>
 	% end
+
+	<form>
+	跳转
+	<select id="pagenav">
+% for i in range(1, max_page+1):
+% url = '?page={}&like={}'.format(i, like)
+% selected = "selected" if i == curr_page else ""
+	<option {{selected}} value="{{url}}">{{i}}</option>
+% end
+	</select>
+	页
+	</form>
 	</h6>
 	</div>
 </div>

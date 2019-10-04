@@ -165,9 +165,9 @@ class ItemRate(BaseModel):
             return item_rate
 
     @staticmethod
-    def get_by_itemid(item_id):
-        item_rates = ItemRate.select().where(ItemRate.item_id == item_id).limit(1)
-        return item_rates[0] if len(item_rates) > 0 else None
+    def getit(id):
+        item_rate = ItemRate.get_or_none(ItemRate.id == id)
+        return item_rate
 
 
 class LocalItem(BaseModel):
