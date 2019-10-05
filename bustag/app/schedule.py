@@ -22,8 +22,9 @@ def download(loop, no_parse_links=False, urls=None):
     print('start download')
     if urls:
         sys.argv.extend(urls)
-    bus_spider.reset_download()
-    extra_options = {'no_parse_links': no_parse_links, 'roots': urls}
+    count = APP_CONFIG['download.count']
+    extra_options = {'no_parse_links': no_parse_links,
+                     'roots': urls, 'count': count}
     aspider.download(loop, extra_options)
     try:
         import bustag.model.classifier as clf

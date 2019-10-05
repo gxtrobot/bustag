@@ -68,7 +68,7 @@ def recommend():
     '''
     ids, X = prepare_predict_data()
     if len(X) == 0:
-        logger.error(
+        logger.warning(
             f'no data for recommend')
         return
     count = 0

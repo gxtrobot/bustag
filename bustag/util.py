@@ -12,7 +12,12 @@ DATA_PATH = 'data/'
 CONFIG_FILE = 'config.ini'
 MODEL_PATH = 'model/'
 APP_CONFIG = {}
-
+DEFAULT_CONFIG = {
+    'download': {
+        'count': 100,
+        'interval': 3600
+    }
+}
 
 def get_cwd():
     if getattr(sys, 'frozen', False):
@@ -27,7 +32,7 @@ def check_testing():
         TESTING = True
         print('*** in test mode ***')
 
-
+\
 def setup_logging():
     formatter = logging.Formatter(
         '%(asctime)s - %(name)-20s - %(levelname)-8s \n- %(message)s')
@@ -72,6 +77,7 @@ def load_config():
     check_config()
     config_path = get_data_path(CONFIG_FILE)
     conf = configparser.ConfigParser()
+    conf.read_dict(DEFAULT_CONFIG)
     conf.read(config_path)
     for section in conf.sections():
         for key in conf.options(section):

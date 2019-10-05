@@ -82,14 +82,15 @@ def load_tags_db():
 
     for row in cursor.fetchall():
         tag_data.append(row)
-    for rate_value, fanhao in tag_data:
-        item_rate = ItemRate.saveit(
-            RATE_TYPE.USER_RATE, rate_value, fanhao)
-        if item_rate:
-            tag_file_added += 1
-        if not Item.get_by_fanhao(fanhao):
-            # add to get from spider
-            missed_fanhaos.append(fanhao)
+    with db_upload.atomic():
+        for rate_value, fanhao in tag_data:
+            item_rate = ItemRate.saveit(
+                RATE_TYPE.USER_RATE, rate_value, fanhao)
+            if item_rate:
+                tag_file_added += 1
+            if not Item.get_by_fanhao(fanhao):
+                # add to get from spider
+                missed_fanhaos.append(fanhao)
     logger.debug(tag_data)
     logger.info(f'added user tag rate: {tag_file_added}')
     logger.info(f'added fanhao to download: {len(missed_fanhaos)}')
