@@ -1,4 +1,5 @@
 # 基于机器学习的老司机车牌自动推荐系统
+<img src="./bustag/app/static/images/logo.png" width="300">
 
 **Bustag** 是一个基于 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
 
