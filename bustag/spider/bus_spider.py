@@ -9,6 +9,7 @@ from .parser import parse_item
 from .db import save, Item
 from bustag.util import APP_CONFIG, get_full_url, logger
 router = get_router()
+MAXPAGE = 30
 
 
 def get_url_by_fanhao(fanhao):
@@ -20,7 +21,7 @@ def get_url_by_fanhao(fanhao):
 def verify_page_path(path, no):
     logger.debug(f'verify page {path} , args {no}')
     no = int(no)
-    if no <= 10:
+    if no <= MAXPAGE:
         return True
     else:
         return False
