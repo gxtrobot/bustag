@@ -12,7 +12,7 @@ from bustag.spider.db import get_items, RATE_TYPE, ItemRate, Item, get_tags_for_
 from bustag.model.persist import dump_model, load_model
 from bustag.util import logger, get_data_path, MODEL_PATH
 
-BINARIZER_PATH = MODEL_PATH + ' label_binarizer.pkl'
+BINARIZER_PATH = MODEL_PATH + 'label_binarizer.pkl'
 
 
 def load_data():

@@ -203,10 +203,12 @@ def start_app():
 if __name__ == "__main__":
     try:
         freeze_support()
+        from bustag import __version__
+        print(f"Bustag server starting: version: {__version__}\n\n")
         import bustag.model.classifier as clf
         from bustag.util import logger, get_cwd, get_now_time, get_data_path
         from bustag.spider.db import (get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate,
-                              Item, LocalItem, DBError, db as dbconn)
+                                      Item, LocalItem, DBError, db as dbconn)
         from bustag.spider import db
         from bustag.app.schedule import start_scheduler, add_download_job
         from bustag.spider import bus_spider

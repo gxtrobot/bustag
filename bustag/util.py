@@ -104,9 +104,10 @@ def to_localtime(utc_dt):
 
 def check_model_folder():
     model_path = os.path.join(DATA_PATH, MODEL_PATH)
-    if not os.path.exists(model_path):
-        logger.info('created model folder')
-        os.mkdir(model_path)
+    abs_path = os.path.abspath(model_path)
+    if not os.path.exists(abs_path):
+        print(f'created model folder: {abs_path}')
+        os.mkdir(abs_path)
 
 
 def init():
