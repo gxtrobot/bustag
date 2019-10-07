@@ -172,20 +172,23 @@ def load_db():
     errmsg = ''
     if request.POST.submit:
         upload = request.files.get('dbfile')
-        logger.debug(upload.filename)
-        name = get_data_path('uploaded.db')
-        upload.save(name, overwrite=True)
-        logger.debug(f'uploaded file saved to {name}')
-        try:
-            tag_file_added, missed_fanhaos = load_tags_db()
-        except DBError:
-            errmsg = '数据库文件错误, 请检查文件是否正确上传'
+        if upload:
+            logger.debug(upload.filename)
+            name = get_data_path('uploaded.db')
+            upload.save(name, overwrite=True)
+            logger.debug(f'uploaded file saved to {name}')
+            try:
+                tag_file_added, missed_fanhaos = load_tags_db()
+            except DBError:
+                errmsg = '数据库文件错误, 请检查文件是否正确上传'
+            else:
+                urls = [bus_spider.get_url_by_fanhao(
+                        fanhao) for fanhao in missed_fanhaos]
+                add_download_job(urls)
+                msg = f'上传 {tag_file_added} 条用户打标数据, {len(missed_fanhaos)} 个番号, '
+                msg += '  注意: 需要下载其他数据才能开始建模, 请等候一定时间'
         else:
-            urls = [bus_spider.get_url_by_fanhao(
-                    fanhao) for fanhao in missed_fanhaos]
-            add_download_job(urls)
-            msg = f'上传 {tag_file_added} 条用户打标数据, {len(missed_fanhaos)} 个番号, '
-            msg += '  注意: 需要下载其他数据才能开始建模, 请等候一定时间'
+            errmsg = '请上传数据库文件'
     return template('load_db', path=request.path, msg=msg, errmsg=errmsg)
 
 
@@ -200,8 +203,8 @@ app = bottle.default_app()
 def start_app():
     t = threading.Thread(target=start_scheduler)
     t.start()
-    run(host='0.0.0.0', server='paste', port=8000, debug=True)
-    # run(host='0.0.0.0', port=8000, debug=True, reloader=False)
+    # run(host='0.0.0.0', server='paste', port=8000, debug=True)
+    run(host='0.0.0.0', port=8000, debug=True, reloader=False)
 
 
 if __name__ == "__main__":
