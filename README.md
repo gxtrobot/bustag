@@ -3,6 +3,18 @@
 
 **Bustag** 是一个基于 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
 
+**免责声明:
+本软件仅用于技术学习使用，禁止用于商业用途，使用本软件所造成的的后果由使用者承担！
+如果你觉得这个软件不错, 可以请我喝杯冰阔落 ^_^.**
+
+<p align="center">
+<img src="./bustag/app/static/images/alipay.jpg" width="200">
+<img src="./bustag/app/static/images/wechat_pay.jpg" width="200">
+</p>
+
+
+
+
 # windows, mac 绿色版下载地址
   链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
 
