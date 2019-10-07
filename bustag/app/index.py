@@ -4,19 +4,12 @@ import sys
 import os
 import bottle
 from multiprocessing import freeze_support
-from bustag.util import logger, get_cwd, get_now_time, get_data_path
 from bottle import route, run, template, static_file, request, response, redirect, hook
-from bustag.spider.db import (get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate,
-                              Item, LocalItem, DBError, db as dbconn)
-from bustag.spider import db
-from bustag.app.schedule import start_scheduler, add_download_job
-from bustag.spider import bus_spider
-from bustag.app.local import add_local_fanhao, load_tags_db
 
 dirname = os.path.dirname(os.path.realpath(__file__))
 if getattr(sys, 'frozen', False):
     dirname = sys._MEIPASS
-logger.debug('dirname:' + dirname)
+print('dirname:' + dirname)
 bottle.TEMPLATE_PATH.insert(0, dirname + '/views/')
 
 
@@ -203,11 +196,24 @@ app = bottle.default_app()
 def start_app():
     t = threading.Thread(target=start_scheduler)
     t.start()
-    # run(host='0.0.0.0', server='paste', port=8000, debug=True)
-    run(host='0.0.0.0', port=8000, debug=True, reloader=False)
+    run(host='0.0.0.0', server='paste', port=8000, debug=True)
+    # run(host='0.0.0.0', port=8000, debug=True, reloader=False)
 
 
 if __name__ == "__main__":
-    freeze_support()
-    import bustag.model.classifier as clf
-    start_app()
+    try:
+        freeze_support()
+        import bustag.model.classifier as clf
+        from bustag.util import logger, get_cwd, get_now_time, get_data_path
+        from bustag.spider.db import (get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate,
+                              Item, LocalItem, DBError, db as dbconn)
+        from bustag.spider import db
+        from bustag.app.schedule import start_scheduler, add_download_job
+        from bustag.spider import bus_spider
+        from bustag.app.local import add_local_fanhao, load_tags_db
+        start_app()
+    except:
+        print('system error')
+    finally:
+        print("Press Enter to continue ...")
+        input()
