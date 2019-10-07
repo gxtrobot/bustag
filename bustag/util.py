@@ -19,6 +19,7 @@ DEFAULT_CONFIG = {
     }
 }
 
+
 def get_cwd():
     if getattr(sys, 'frozen', False):
         return sys._MEIPASS
@@ -32,10 +33,10 @@ def check_testing():
         TESTING = True
         print('*** in test mode ***')
 
-\
+
 def setup_logging():
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)-20s - %(levelname)-8s \n- %(message)s')
+    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s \n %(message)s '
+    formatter = logging.Formatter(fmt)
     ch = logging.StreamHandler()
     ch.setFormatter(formatter)
     logger.addHandler(ch)

@@ -5,8 +5,9 @@ import os
 import bottle
 from multiprocessing import freeze_support
 from bustag.util import logger, get_cwd, get_now_time, get_data_path
-from bottle import route, run, template, static_file, request, response, redirect
-from bustag.spider.db import get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate, Item, LocalItem
+from bottle import route, run, template, static_file, request, response, redirect, hook
+from bustag.spider.db import (get_items, get_local_items, RATE_TYPE, RATE_VALUE, ItemRate,
+                              Item, LocalItem, DBError, db as dbconn)
 from bustag.spider import db
 from bustag.app.schedule import start_scheduler, add_download_job
 from bustag.spider import bus_spider
@@ -17,6 +18,17 @@ if getattr(sys, 'frozen', False):
     dirname = sys._MEIPASS
 logger.debug('dirname:' + dirname)
 bottle.TEMPLATE_PATH.insert(0, dirname + '/views/')
+
+
+@hook('before_request')
+def _connect_db():
+    dbconn.connect(reuse_if_open=True)
+
+
+@hook('after_request')
+def _close_db():
+    if not dbconn.is_closed():
+        dbconn.close()
 
 
 @route('/static/<filepath:path>')
@@ -53,21 +65,20 @@ def tagit():
     return template('tagit', items=items, page_info=page_info, like=rate_value, path=request.path)
 
 
-@route('/tag/<id:int>', method='POST')
-def tag(id):
+@route('/tag/<fanhao>', method='POST')
+def tag(fanhao):
     if request.POST.submit:
         formid = request.POST.formid
-        item_rate = ItemRate.get_by_itemid(id)
+        item_rate = ItemRate.get_by_fanhao(fanhao)
         rate_value = request.POST.submit
         if not item_rate:
             rate_type = RATE_TYPE.USER_RATE
-            item = Item.getit(id)
-            ItemRate.saveit(rate_type, rate_value, item.fanhao)
-            logger.debug(f'add new item_rate for id:{id}')
+            ItemRate.saveit(rate_type, rate_value, fanhao)
+            logger.debug(f'add new item_rate for fanhao:{fanhao}')
         else:
             item_rate.rate_value = rate_value
             item_rate.save()
-            logger.debug(f'updated item_rate for id:{id}')
+            logger.debug(f'updated item_rate for fanhao:{fanhao}')
     page = int(request.query.get('page', 1))
     like = request.query.get('like')
     url = f'/tagit?page={page}&like={like}'
@@ -76,12 +87,12 @@ def tag(id):
     redirect(url)
 
 
-@route('/correct/<id:int>', method='POST')
-def correct(id):
+@route('/correct/<fanhao>', method='POST')
+def correct(fanhao):
     if request.POST.submit:
         formid = request.POST.formid
         is_correct = int(request.POST.submit)
-        item_rate = ItemRate.getit(id)
+        item_rate = ItemRate.get_by_fanhao(fanhao)
         if item_rate:
             item_rate.rate_type = RATE_TYPE.USER_RATE
             if not is_correct:
@@ -90,7 +101,7 @@ def correct(id):
                 item_rate.rate_value = rate_value
             item_rate.save()
             logger.debug(
-                f'updated item_id: {id}, {"and correct the rate_value" if not is_correct else ""}')
+                f'updated item fanhao: {fanhao}, {"and correct the rate_value" if not is_correct else ""}')
     page = int(request.query.get('page', 1))
     like = int(request.query.get('like', 1))
     url = f'/?page={page}&like={like}'
@@ -158,19 +169,29 @@ def local_play(id):
 @route('/load_db', method=['GET', 'POST'])
 def load_db():
     msg = ''
+    errmsg = ''
     if request.POST.submit:
         upload = request.files.get('dbfile')
         logger.debug(upload.filename)
         name = get_data_path('uploaded.db')
         upload.save(name, overwrite=True)
         logger.debug(f'uploaded file saved to {name}')
-        tag_file_added, missed_fanhaos = load_tags_db()
-        urls = [bus_spider.get_url_by_fanhao(
-                fanhao) for fanhao in missed_fanhaos]
-        add_download_job(urls)
-        msg = f'上传 {tag_file_added} 条用户打标数据, {len(missed_fanhaos)} 个番号, '
+        try:
+            tag_file_added, missed_fanhaos = load_tags_db()
+        except DBError:
+            errmsg = '数据库文件错误, 请检查文件是否正确上传'
+        else:
+            urls = [bus_spider.get_url_by_fanhao(
+                    fanhao) for fanhao in missed_fanhaos]
+            add_download_job(urls)
+            msg = f'上传 {tag_file_added} 条用户打标数据, {len(missed_fanhaos)} 个番号, '
+            msg += '  注意: 需要下载其他数据才能开始建模, 请等候一定时间'
+    return template('load_db', path=request.path, msg=msg, errmsg=errmsg)
 
-    return template('load_db', path=request.path, msg=msg)
+
+@route('/about')
+def about():
+    return template('about', path=request.path)
 
 
 app = bottle.default_app()
@@ -179,8 +200,8 @@ app = bottle.default_app()
 def start_app():
     t = threading.Thread(target=start_scheduler)
     t.start()
-    # run(host='0.0.0.0', server='paste', port=8000, debug=True)
-    run(host='0.0.0.0', port=8000, debug=True, reloader=False)
+    run(host='0.0.0.0', server='paste', port=8000, debug=True)
+    # run(host='0.0.0.0', port=8000, debug=True, reloader=False)
 
 
 if __name__ == "__main__":

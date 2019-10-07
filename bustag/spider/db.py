@@ -27,6 +27,10 @@ class ExistError(Exception):
     pass
 
 
+class DBError(Exception):
+    pass
+
+
 class Item(BaseModel):
     '''
     item table
@@ -167,6 +171,11 @@ class ItemRate(BaseModel):
     @staticmethod
     def getit(id):
         item_rate = ItemRate.get_or_none(ItemRate.id == id)
+        return item_rate
+
+    @staticmethod
+    def get_by_fanhao(fanhao):
+        item_rate = ItemRate.get_or_none(ItemRate.item_id == fanhao)
         return item_rate
 
 

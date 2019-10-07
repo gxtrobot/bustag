@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-12">
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">BUSTAG</a>
+  <a class="navbar-brand" href="/"><img src="/static/images/logo.png" width="140"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -39,6 +39,9 @@
       </li>
       <li class="nav-item {{ 'active' if path=='/load_db' else ''}}">
         <a class="nav-link" href="/load_db">数据</a>
+      </li>
+      <li class="nav-item {{ 'active' if path=='/about' else ''}}">
+        <a class="nav-link" href="/about">关于</a>
       </li>
     </ul>
   </div>

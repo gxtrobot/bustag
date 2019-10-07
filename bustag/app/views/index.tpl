@@ -19,14 +19,14 @@
 %#generate list of rows of items
 % i = 1
 %for item in items:
-<form id="form-{{i}}" action="/correct/{{item.item_rate.id}}?page={{curr_page}}&like={{like}}" method="post">
+<form id="form-{{i}}" action="/correct/{{item.fanhao}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
 		<div class="col-12 col-md-4">
 		<img class="img-fluid img-thumbnail coverimg" src={{item.cover_img_url}}>
 		</div>
 
 			<div class="col-7 col-md-5">
-			<div class="small text-muted">id: {{item.item_rate.id}}</div>
+			<div class="small text-muted">id: {{item.id}}</div>
 			<div class="small text-muted">发行日期: {{item.release_date}}</div>
 			<div class="small text-muted">添加日期: {{item.add_date}}</div>
 			<h6>{{item.fanhao}} </h6>

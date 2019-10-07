@@ -5,7 +5,7 @@
 <div class="row">
 	<div class="col-12 text-center">
 	<h6>
-	<span>共 {{total_items}}条</span>
+	<span>共  {{max_page}}页,{{total_items}}条</span>
 	% if curr_page != 1:
 	<a href="?page=1&like={{like}}"> 第一页</a>
 	% end

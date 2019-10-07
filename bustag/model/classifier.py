@@ -83,6 +83,6 @@ def recommend():
         item_rate = ItemRate(rate_type=rate_type,
                              rate_value=rate_value, item_id=item_id)
         item_rate.save()
-    logger.debug(
+    logger.warning(
         f'predicted {total} items, recommended {count}')
     return total, count

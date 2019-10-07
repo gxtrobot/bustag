@@ -40,7 +40,8 @@ def verify_fanhao(path, fanhao):
     verify fanhao before add it to queue
     '''
     exists = Item.get_by_fanhao(fanhao)
-    logger.debug(f'verify {fanhao}: , exists:{exists is None}, skip {path}')
+    logger.debug(
+        f'verify {fanhao}: , exists:{exists is not None}, skip {path}')
     return exists is None
 
 

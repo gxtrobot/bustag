@@ -1,9 +1,10 @@
 '''
 handle local file related functions
 '''
-from peewee import SqliteDatabase
+import re
+from peewee import SqliteDatabase, DatabaseError
 
-from bustag.spider.db import Item, LocalItem, ItemRate, RATE_TYPE, RATE_VALUE, db
+from bustag.spider.db import Item, LocalItem, ItemRate, RATE_TYPE, RATE_VALUE, db, DBError
 from bustag.util import logger, get_data_path
 
 
@@ -17,15 +18,22 @@ def add_local_fanhao(fanhao, tag_like):
     missed_fanhaos = []
     local_file_added = 0
     tag_file_added = 0
+    pattern = r'([A-Z]+)-?([0-9]+)'
     for row in rows:
         if ',' in row:
             fanhao, path = row.split(',')
         else:
             fanhao = row
             path = None
+
         fanhao = fanhao.strip().upper()
-        path = path.strip() if path else None
-        items.append((fanhao, path))
+        match = re.search(pattern, fanhao)
+        if match and len(match.groups()) == 2:
+            series, num = match.groups()
+            matched_fanhao = f'{series}-{num}'
+            path = path.strip() if path else None
+            logger.debug(f'matched fanhao {matched_fanhao}')
+            items.append((matched_fanhao, path))
     with db.atomic():
         for item in items:
             fanhao, path = item
@@ -57,7 +65,11 @@ def load_tags_db():
         file: io.BufferedRandom -> uploaded db file stream
     '''
     db_name = get_data_path('uploaded.db')
-    db_upload = SqliteDatabase(db_name)
+    try:
+        db_upload = SqliteDatabase(db_name)
+        db_upload.get_tables()
+    except DatabaseError:
+        raise DBError()
     db_is_old = False
     tag_data = []
     missed_fanhaos = []

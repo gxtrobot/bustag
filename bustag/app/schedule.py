@@ -22,6 +22,9 @@ def download(loop, no_parse_links=False, urls=None):
     print('start download')
     if urls:
         sys.argv.extend(urls)
+    else:
+        logger.warning('no links to download')
+        return
     count = APP_CONFIG['download.count']
     extra_options = {'no_parse_links': no_parse_links,
                      'roots': urls, 'count': count}

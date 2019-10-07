@@ -26,7 +26,7 @@
 			</label>
 		</div>
 		  <div class="form-group py-3">
-			<label for="fanhao">每行格式: 番号,URL(可省略, 本地文件无效, 须为Plex等服务器视频URL)</label>
+			<label for="fanhao">每行格式: 番号(XXX-123),URL(可省略, 本地文件无效, 须为Plex等服务器视频URL)</label>
 			<textarea class="form-control" id="fanhao" name="fanhao" rows="20"></textarea>
 		  </div>
 		<div class="text-center">

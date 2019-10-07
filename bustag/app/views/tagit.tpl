@@ -19,7 +19,7 @@
 %#generate list of rows of items
 % i = 1
 %for item in items:
-<form id="form-{{i}}" action="/tag/{{item.id}}?page={{curr_page}}&like={{like}}" method="post">
+<form id="form-{{i}}" action="/tag/{{item.fanhao}}?page={{curr_page}}&like={{like}}" method="post">
 	<div class="row py-3">
 		<div class="col-12 col-md-4">
 		<img class="img-fluid img-thumbnail coverimg" src={{item.cover_img_url}}>
@@ -45,8 +45,12 @@
 			</div>
 		<div class="col-5 col-md-3  align-self-center">
 		<input type=hidden name="formid" value="form-{{i}}">
+% if like is None or like == 0:
 		<button type="submit" name="submit" class="btn btn-primary btn-sm" value="1">喜欢</button>
+% end
+% if like is None or like == 1:
 		<button type="submit" name="submit" class="btn btn-danger btn-sm" value="0">不喜欢</button>
+% end
 		</div>
 	</div>
 	</form>
