@@ -8,11 +8,24 @@
   压缩包密码: gxtrobot
 
 ## 更新
-  ### 2019-9-6 0.1.1版发布
+
+### release 0.2.0(2019-10-7)
+- 一些bug修复, 如数据解析不全等
+- 多处页面优化(封面图点击放大, 页面跳转等等)
+- 启动检查config.ini, 没有自动退出
+- 手动本地文件管理, 增加手动添加番号及本地路径功能
+- 增加今日更新, 推荐数量
+- 手动上传番号, 直接打标为喜欢
+- 添加logo
+- 增加打标数据库导入功能
+
+#### 注意事项
+- 只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
+- **v0.2.0 版本有数据库结构变化, 所以和老版本数据库不兼容, 建议新建一个目录运行新版, 如需要愿数据库打标数据, 可以通过数据页面, 导入数据库完成打标数据导入**
+
+### 2019-9-6 0.1.1版发布
   - 修复部分bug
-  - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用, 只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
-
-
+  - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用, 
 
 新录了个视频, 演示了如何使用docker运行项目
 - (linux/mac) https://pan.baidu.com/s/13a_7pE-uK0Jt7w2anVJV9A  提取码: za4m
@@ -25,6 +38,8 @@
 - 车牌打标功能
 - 模型训练, 基于当前所有打标数据训练模型
 - 有了模型后, 自动预测判断是否喜欢
+- 手动上传番号, 本地文件管理
+- 数据库打标数据导入
 - Docker 镜像一键运行, 省去新手配置项目的麻烦
 - 项目访问地址: localhost:8000
 
@@ -36,9 +51,18 @@
 - 打标页面
   ![](./docs/tagit.png)
 
-- 其他页面
-  ![](./docs/other.png)
+- 本地文件页面
+  ![](./docs/local.png)
 
+- 本地番号, 链接上传页面
+  ![](./docs/local_upload.png)
+  
+- 模型页面
+  ![](./docs/model.png)
+
+- 数据页面
+  ![](./docs/data.png)
+  
 ## 如何运行项目
 
   ###  windows , mac绿色版如何使用
