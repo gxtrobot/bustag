@@ -81,10 +81,12 @@ def load_config():
     conf.read_dict(DEFAULT_CONFIG)
     conf.read(config_path)
     for section in conf.sections():
+        APP_CONFIG[section.lower()] = dict(conf[section])
         for key in conf.options(section):
             value = conf.get(section, key)
             key = section + '.' + key
             APP_CONFIG[key.lower()] = value
+    logger.debug(APP_CONFIG)
 
 
 def format_datetime(dt):

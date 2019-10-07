@@ -26,8 +26,11 @@ def download(loop, no_parse_links=False, urls=None):
         logger.warning('no links to download')
         return
     count = APP_CONFIG['download.count']
-    extra_options = {'no_parse_links': no_parse_links,
-                     'roots': urls, 'count': count}
+    extra_options = APP_CONFIG.get('options', {})
+    options = {'no_parse_links': no_parse_links,
+               'roots': urls, 'count': count}
+    extra_options.update(options)
+
     aspider.download(loop, extra_options)
     try:
         import bustag.model.classifier as clf
