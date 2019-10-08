@@ -12,7 +12,10 @@
 <img src="./bustag/app/static/images/wechat_pay.jpg" width="200">
 </p>
 
+# 紧急提示
+貌似 https://www.cdnbus.bid 这个地址被墙了, ddos, 可能访问太多
 
+修改[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini)的root 为 https://www.busdmm.work , 就可以了, 
 
 
 # windows, mac 绿色版下载地址
