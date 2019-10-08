@@ -20,6 +20,10 @@
 
   压缩包密码: gxtrobot
 
+# docker 版本 0.2.0 也已经同步更新
+  运行 ```docker pull gxtrobot/bustag-app:latest``` 后重新启动项目即可
+
+
 ## 更新
 
 ### release 0.2.0(2019-10-7)
