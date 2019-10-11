@@ -13,9 +13,8 @@
 </p>
 
 # 紧急提示
-貌似 https://www.cdnbus.bid 这个地址被墙了, ddos, 可能访问太多
-
-修改[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini)的root 为 https://www.busdmm.work , 就可以了, 
+现在页面解析出错, 可能bus那边调整了页面结构了, 预计晚上看看, 会尽快修复
+另外建议大家把每次更新间隔时间放长点, 可能8小时更新一次够了(internal=28800)
 
 
 # windows, mac 绿色版下载地址
