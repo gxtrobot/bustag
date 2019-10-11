@@ -1,7 +1,13 @@
 # 基于机器学习的老司机车牌自动推荐系统
 <img src="./bustag/app/static/images/logo.png" width="300">
 
-**Bustag** 是一个基于 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
+**Bustag** 是一个基于我开发的 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
+
+为提高解决问题效率 ,建了个qq群
+
+**QQ群: 941894005**
+
+注意, 该群仅讨论**python学习, 爬虫开发, aspider 框架学习开发, Bustag系统bug, 运行问题**等, 请勿讨论无关主题
 
 **免责声明:
 本软件仅用于技术学习使用，禁止用于商业用途，使用本软件所造成的的后果由使用者承担！
@@ -12,9 +18,9 @@
 <img src="./bustag/app/static/images/wechat_pay.jpg" width="200">
 </p>
 
-# 紧急提示 2019-10-11
-现在页面解析出错, 可能bus那边调整了页面结构了, 预计晚上看看, 会尽快修复
-另外建议大家把每次更新间隔时间放长点, 可能8小时更新一次够了, 修该config.ini里的(interval=28800)
+# 紧急提示
+github仓库的data目录下的bus.db以前没有更新为0.2.0版的新数据库结构, 现在更新了, 注意如果用的docker, 需要使用新
+数据库, 或者移除原数据库再使用新docker 0.2.0版, 然后可以导入愿数据库的打标数据
 
 
 # windows, mac 绿色版下载地址
@@ -44,7 +50,7 @@
 
 ### 2019-9-6 0.1.1版发布
   - 修复部分bug
-  - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用, 
+  - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用,
 
 新录了个视频, 演示了如何使用docker运行项目
 - (linux/mac) https://pan.baidu.com/s/13a_7pE-uK0Jt7w2anVJV9A  提取码: za4m
@@ -75,13 +81,13 @@
 
 - 本地番号, 链接上传页面
   ![](./docs/local_upload.png)
-  
+
 - 模型页面
   ![](./docs/model.png)
 
 - 数据页面
   ![](./docs/data.png)
-  
+
 ## 如何运行项目
 
   ###  windows , mac绿色版如何使用
@@ -109,11 +115,13 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8000'
 
   ```
   linux, mac
-    docker run --rm -d -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
+    docker run --rm -d -e TZ=Asia/Shanghai -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
     windows powershell
-    docker run --rm -d -v ${PWD}/data:/app/data -p 8000:8000 gxtrobot/bustag-app
+    docker run --rm -d -e TZ=Asia/Shanghai -v ${PWD}/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
+
+注: -e TZ=Asia/Shanghai , 指的是docker container的时区设置, 如果需要其他时区可自行设置, 如果不设置默认为UTC时区
   ```
 
 ## 如何使用项目
