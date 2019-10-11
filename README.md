@@ -12,9 +12,9 @@
 <img src="./bustag/app/static/images/wechat_pay.jpg" width="200">
 </p>
 
-# 紧急提示
+# 紧急提示 2019-10-11
 现在页面解析出错, 可能bus那边调整了页面结构了, 预计晚上看看, 会尽快修复
-另外建议大家把每次更新间隔时间放长点, 可能8小时更新一次够了(internal=28800)
+另外建议大家把每次更新间隔时间放长点, 可能8小时更新一次够了, 修该config.ini里的(interval=28800)
 
 
 # windows, mac 绿色版下载地址
