@@ -30,7 +30,7 @@ def send_static(filepath):
 
 
 def _remove_extra_tags(item):
-    limit = 3
+    limit = 10
     tags_dict = item.tags_dict
     tags = ['genre', 'star']
     for t in tags:
