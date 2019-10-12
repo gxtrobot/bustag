@@ -5,7 +5,6 @@
 <div class="row">
 	<div class="col-12 text-center">
 	<h6>
-	<span>共  {{max_page}}页,{{total_items}}条</span>
 	% if curr_page != 1:
 	<a href="?page=1&like={{like}}"> 第一页</a>
 	% end
@@ -19,8 +18,10 @@
 	% if curr_page != max_page:
 	<a href="?page={{max_page}}&like={{like}}">最后页</a>
 	% end
-
+	</h6>
+	<div>
 	<form>
+		<span>共  {{max_page}}页,{{total_items}}条</span>
 	跳转
 	<select id="pagenav">
 % for i in range(1, max_page+1):
@@ -31,6 +32,6 @@
 	</select>
 	页
 	</form>
-	</h6>
+	</div>
 	</div>
 </div>

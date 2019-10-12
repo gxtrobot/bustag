@@ -20,12 +20,14 @@ def download(loop, no_parse_links=False, urls=None):
         urls:tuple - tuple of urls
     """
     print('start download')
-    if urls:
-        sys.argv.extend(urls)
-    else:
+    # reset sys.argv
+    sys.argv = sys.argv[:1]
+    if not urls:
         logger.warning('no links to download')
         return
     count = APP_CONFIG['download.count']
+    if no_parse_links:
+        count = len(urls)
     extra_options = APP_CONFIG.get('options', {})
     options = {'no_parse_links': no_parse_links,
                'roots': urls, 'count': count}
