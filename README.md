@@ -28,11 +28,19 @@ github仓库的data目录下的bus.db以前没有更新为0.2.0版的新数据�
 
   压缩包密码: gxtrobot
 
-# docker 版本 0.2.0 也已经同步更新
+# docker 版本 更新
   运行 ```docker pull gxtrobot/bustag-app:latest``` 后重新启动项目即可
 
 
 ## 更新
+
+### release 0.2.1(2019-10-12)
+- 修复几个bug
+- 增加系统启动错误信息打印, 方便排查
+
+docker版本也同步更新
+
+该版本主要是为了更好发现错误, 如果能正常运行的可以不更新
 
 ### release 0.2.0(2019-10-7)
 - 一些bug修复, 如数据解析不全等
@@ -43,6 +51,8 @@ github仓库的data目录下的bus.db以前没有更新为0.2.0版的新数据�
 - 手动上传番号, 直接打标为喜欢
 - 添加logo
 - 增加打标数据库导入功能
+
+# docker 版本 0.2.0 也已经同步更新
 
 #### 注意事项
 - 只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
@@ -115,13 +125,14 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8000'
 
   ```
   linux, mac
-    docker run --rm -d -e TZ=Asia/Shanghai -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
+    docker run --rm -d -e TZ=Asia/Shanghai -e PYTHONUNBUFFERED=1 -v $(pwd)/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
     windows powershell
-    docker run --rm -d -e TZ=Asia/Shanghai -v ${PWD}/data:/app/data -p 8000:8000 gxtrobot/bustag-app
+    docker run --rm -d -e TZ=Asia/Shanghai -e PYTHONUNBUFFERED=1 -v ${PWD}/data:/app/data -p 8000:8000 gxtrobot/bustag-app
 
 
 注: -e TZ=Asia/Shanghai , 指的是docker container的时区设置, 如果需要其他时区可自行设置, 如果不设置默认为UTC时区
+    -e PYTHONUNBUFFERED=1 , 指的是显示所有log输出, 如果不设置, 那只能看到debug 的错误log日志
   ```
 
 ## 如何使用项目
