@@ -1,5 +1,6 @@
 from collections import defaultdict
 import threading
+import traceback
 import sys
 import os
 import bottle
@@ -227,7 +228,8 @@ if __name__ == "__main__":
         start_app()
     except Exception as e:
         print('system error')
-        logger.exception(e)
+        traceback.print_exc()
     finally:
         print("Press Enter to continue ...")
         input()
+        os._exit(1)
