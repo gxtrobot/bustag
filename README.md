@@ -3,6 +3,9 @@
 
 **Bustag** 是一个基于我开发的 python 异步爬虫框架开发[aspider](https://github.com/gxtrobot/aspider)的自动车牌推荐系统, 系统原理为定时爬取最新车牌信息, 然后可以对车牌进行打标(标示是否喜欢), 打标车牌到一定数量可以进行训练并生成模型, 以后就可以基于此模型自动对下载的车牌进行预测是否喜欢, 可以过滤掉大量不喜欢的车牌, 节约时间
 
+### Python in Action 学习视频发布
+[https://github.com/gxtrobot/pyinaction](https://github.com/gxtrobot/pyinaction)
+
 为提高解决问题效率 ,建了个qq群
 
 **QQ群: 941894005**
@@ -19,8 +22,6 @@
 </p>
 
 # 紧急提示
-github仓库的data目录下的bus.db以前没有更新为0.2.0版的新数据库结构, 现在更新了, 注意如果用的docker, 需要使用新
-数据库, 或者移除原数据库再使用新docker 0.2.0版, 然后可以导入愿数据库的打标数据
 
 
 # windows, mac 绿色版下载地址
@@ -33,6 +34,7 @@ github仓库的data目录下的bus.db以前没有更新为0.2.0版的新数据�
 
 
 ## 更新
+
 
 ### 群晖docker安装bustag 视频发布(2019-10-16)
 链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
