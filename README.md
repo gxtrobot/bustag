@@ -32,17 +32,18 @@
 # docker 版本 更新
   运行 ```docker pull gxtrobot/bustag-app:latest``` 后重新启动项目即可
 
+### 使用视频 
+
+链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
+
+在视频目录下
+
+- 群晖docker安装bustag 视频发布(2019-10-16)
+- bustag最新使用视频发布(2019-10-15)  
+- linux/mac docker版本安装 
+- win10 docker版本安装
 
 ## 更新
-
-
-### 群晖docker安装bustag 视频发布(2019-10-16)
-链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
-在视频目录下, 推荐用群晖或docker的看看
-
-### bustag最新使用视频发布(2019-10-15)
-链接: https://pan.baidu.com/s/1pqarq7fOXjsbad0WN4Uaaw 提取码: budu
-在视频目录下, 新手必看
 
 ### release 0.2.1(2019-10-12)
 - 修复几个bug
@@ -72,9 +73,6 @@ docker版本也同步更新
   - 修复部分bug
   - 增加windows(只在win10下测试过)), mac 绿色版, 解压直接使用,
 
-新录了个视频, 演示了如何使用docker运行项目
-- (linux/mac) https://pan.baidu.com/s/13a_7pE-uK0Jt7w2anVJV9A  提取码: za4m
-- (win10) https://pan.baidu.com/s/1dtUFvMvrYlw5plctaky46w 提取码: yd2y
 
 ## 系统功能
 
@@ -178,11 +176,7 @@ gunicorn bustag.app.index:app --bind='0.0.0.0:8000'
 ## 其他问题
 
 1. 改变自动下载的频率
-   系统默认为每 30 分钟下载一次, 如果需要自定义可以在 data 下建立一个[crontab.txt](./docker/crontab.txt)文件, 该文件是基于 linux crontab 执行, ,具体可以看[wiki](https://zh.wikipedia.org/zh-hans/Cron)
-
-```
-*/30 * * * * /app/docker/run_download.sh >> /var/log/bustag.log 2>&1
-```
+   修改config.ini的interval 参数即可, 单位是秒, 比如修改为一小时更新一次为 `interval=3600`
 
 2. 改变下载初始 url
    因为该 url 会经常改变, 所有系统的 config.ini -> download -> root_path 定义了初始 url, 可以根据需要改变
