@@ -29,8 +29,11 @@
 
   压缩包密码: gxtrobot
 
-# docker 版本 更新
-  运行 ```docker pull gxtrobot/bustag-app:latest``` 后重新启动项目即可
+# docker 版本同步更新
+运行 ```docker pull gxtrobot/bustag-app:latest``` 后重新启动项目即可
+
+# 使用须知
+只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
 
 ### 使用视频 
 
@@ -49,8 +52,6 @@
 - 修复几个bug
 - 增加系统启动错误信息打印, 方便排查
 
-docker版本也同步更新
-
 该版本主要是为了更好发现错误, 如果能正常运行的可以不更新
 
 ### release 0.2.0(2019-10-7)
@@ -63,10 +64,7 @@ docker版本也同步更新
 - 添加logo
 - 增加打标数据库导入功能
 
-# docker 版本 0.2.0 也已经同步更新
-
 #### 注意事项
-- 只需在data目录下创建[config.ini](https://raw.githubusercontent.com/gxtrobot/bustag/master/data/config.ini), 然后启动系统, 访问localhost:8000
 - **v0.2.0 版本有数据库结构变化, 所以和老版本数据库不兼容, 建议新建一个目录运行新版, 如需要愿数据库打标数据, 可以通过数据页面, 导入数据库完成打标数据导入**
 
 ### 2019-9-6 0.1.1版发布
