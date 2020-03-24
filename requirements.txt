@@ -13,7 +13,7 @@ autopep8==1.4.4
 Babel==2.7.0
 backcall==0.1.0
 beautifulsoup4==4.8.0
-bleach==3.1.0
+bleach==3.1.2
 bottle==0.12.17
 bs4==0.0.1
 category-encoders==2.0.0
