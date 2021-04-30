@@ -110,7 +110,7 @@ tqdm==4.32.2
 traitlets==4.3.2
 typed-ast==1.4.0
 tzlocal==2.0.0
-urllib3==1.25.3
+urllib3==1.25.8
 w3lib==1.20.0
 wcwidth==0.1.7
 webencodings==0.5.1
