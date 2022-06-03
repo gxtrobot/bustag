@@ -14,7 +14,7 @@ Babel==2.7.0
 backcall==0.1.0
 beautifulsoup4==4.8.0
 bleach==3.1.0
-bottle==0.12.17
+bottle==0.12.20
 bs4==0.0.1
 category-encoders==2.0.0
 certifi==2019.6.16
