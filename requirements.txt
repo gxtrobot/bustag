@@ -40,7 +40,7 @@ ipywidgets==7.5.1
 isort==4.3.21
 jedi==0.14.1
 Jinja2==2.10.1
-joblib==0.13.2
+joblib==1.2.0
 jsonschema==3.0.2
 jupyter-client==5.3.1
 jupyter-console==6.0.0
