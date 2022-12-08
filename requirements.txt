@@ -17,7 +17,7 @@ bleach==3.1.0
 bottle==0.12.17
 bs4==0.0.1
 category-encoders==2.0.0
-certifi==2019.6.16
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 coverage==4.5.4
